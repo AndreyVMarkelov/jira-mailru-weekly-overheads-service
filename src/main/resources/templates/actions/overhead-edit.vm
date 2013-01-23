@@ -1,0 +1,55 @@
+##  Created by Dmitry Miroshnichenko 09-01-2012. Copyright Mail.Ru Group 2012.
+##  All rights reserved.
+$webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:mail-overhead-roles-resources")
+<html>
+    <head>
+    </head>
+    <body>
+        #if (${hasErrorMessages})
+            #foreach ($error in $action.getErrorMessages())
+                <div class="error">$i18n.getText("$error")</div>
+            #end
+            #else
+                <h2>$action.getText("mailru.overheads.edit.tab.title")</h2>
+                <table width="100%" class="grid">
+                    <thead class="jiraformheader">
+                        <td>
+                            <b>$action.getText("mailru.overheads.edit.tab.table.column.user")</b>
+                        </td>
+                        <td>
+                            <b>$action.getText("mailru.overheads.edit.tab.table.column.overhead")</b>
+                        </td>
+                        <td>
+                            <b>$action.getText("mailru.overheads.edit.tab.table.column.qa")</b>
+                        </td>
+                        <td>
+                        </td>
+                    </thead>
+                    #foreach($username in $action.overheads.keySet())
+                        <tr>
+                            <form id="overhead-change-${username}" name="overhead-change-form" action="$action.getBaseUrl()/rest/overheadvalssrv/1.0/overheadvalssrv/changeval" method="get">
+                                <td width="40%" class="jiraformbody">
+                                    <input type="hidden" name="username" value="$username" id="ov-username-$username">
+                                        $username
+</td>
+<td width="25%" class="jiraformbody">
+    <input type="text" name="overhead" value="$action.overheads.get($username).overhead" id="ov-user-overhead-$username">
+</td>
+<td width="25%" class="jiraformbody">
+    <select class="select" id="ov-qa-select-$username" name="qa">
+        <option value="" #if(!$action.overheads.get($username).qaName) selected#end></option>
+            #foreach($user in $action.getAllUsers())
+                <option value="$user.name" #if($user.name == $action.overheads.get($username).qaName) selected#end>${user.name}</option>
+            #end
+    </select>
+</td>
+<td width="10%" class="jiraformbody">
+    <input type="submit" value="$i18n.getText("mailru.overheads.edit.tab.table.button.change")">
+</td>
+</form>
+</tr>
+                    #end
+</table>
+        #end
+</body>
+</html>
