@@ -31,6 +31,27 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
 </form>
 </tr>
 </table>
+            <table width="100%" class="grid">
+                <thead class="jiraformheader">
+                    <td>
+                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.label")</b>
+                    </td>
+                    <td>
+                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.value")</b>
+                    </td>
+                </thead>
+                <tr>
+                    <form id="overhead-qaid-form-id" name="overhead-qaid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setqaid" method="get">
+                        <td width="40%" class="jiraformbody">
+                            $i18n.getText("mailru.overheads.admin.tab.caption.qaid")
+                        </td>
+                        <td width="60%" class="jiraformbody">
+                            <input id="task-qaid-input-id" type="text" name="qaid" value="$!action.getQaId()">
+                                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+</td>
+</form>
+</tr>
+</table>
 <table width="100%" class="grid">
     <thead class="jiraformheader">
         <td>
