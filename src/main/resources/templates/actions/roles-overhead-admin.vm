@@ -31,27 +31,53 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
 </form>
 </tr>
 </table>
-            <table width="100%" class="grid">
-                <thead class="jiraformheader">
-                    <td>
-                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.label")</b>
-                    </td>
-                    <td>
-                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.value")</b>
-                    </td>
-                </thead>
-                <tr>
-                    <form id="overhead-qaid-form-id" name="overhead-qaid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setqaid" method="get">
-                        <td width="40%" class="jiraformbody">
-                            $i18n.getText("mailru.overheads.admin.tab.caption.qaid")
-                        </td>
-                        <td width="60%" class="jiraformbody">
-                            <input id="task-qaid-input-id" type="text" name="qaid" value="$!action.getQaId()">
-                                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+<table width="100%" class="grid">
+    <thead class="jiraformheader">
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.label")</b>
+        </td>
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.value")</b>
+        </td>
+    </thead>
+    <tr>
+        <form id="overhead-qaid-form-id" name="overhead-qaid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setqaid" method="get">
+            <td width="40%" class="jiraformbody">
+                $i18n.getText("mailru.overheads.admin.tab.caption.qaid")
+            </td>
+            <td width="60%" class="jiraformbody">
+                <input id="task-qaid-input-id" type="text" name="qaid" value="$!action.getQaId()">
+                    <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
 </td>
 </form>
 </tr>
 </table>
+</table>
+<table width="100%" class="grid">
+    <thead class="jiraformheader">
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.addressee.label")</b>
+        </td>
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.addressee.value")</b>
+        </td>
+    </thead>
+    <tr>
+        <form id="overhead-addressee-form-id" name="overhead-addressee-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setaddressee" method="get">
+            <td width="40%" class="jiraformbody">
+                $i18n.getText("mailru.overheads.admin.tab.caption.addressee")
+            </td>
+            <td width="60%" class="jiraformbody">
+                <input id="addressee-input-id" type="text" name="addressee" value="$!action.addressee">
+                    <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+</td>
+</form>
+</tr>
+</table>
+<form id="overhead-force-job-form-id" name="overhead-force-job-form" action="$action.getBaseUrl()/rest/overheadcommonsrv/1.0/overheadcommonsrv/forcejob" method="get">
+       <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.forcejob")">
+</form>
+<b>Last run:</b> $!action.jobLastRun
 <table width="100%" class="grid">
     <thead class="jiraformheader">
         <td>

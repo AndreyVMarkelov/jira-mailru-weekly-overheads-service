@@ -22,6 +22,8 @@ import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.mail.Email;
+import com.atlassian.mail.MailException;
 import com.atlassian.sal.api.scheduling.PluginJob;
 
 
@@ -39,8 +41,6 @@ public class MailRuOverheadTask implements PluginJob
         {
             logger
                 .error("MailRuOverheadTask::execute - MailRuOverheadsMonitorImpl is null");
-
-            return;
         }
 
         if (!monitor.isInited())
@@ -52,12 +52,21 @@ public class MailRuOverheadTask implements PluginJob
         else
         {
             Date currentDate = new Date();
-            executeJob(monitor, currentDate);
+            try
+            {
+                executeJob(monitor, currentDate);
+            }
+            catch (Exception e)
+            {
+                User user = ComponentManager.getInstance().getUserUtil()
+                    .getUserObject(monitor.getSettings().getAddressee());
+                sendEmail(user, "JIRA job failure", e.getMessage());
+            }
         }
     }
 
     private void executeJob(final MailRuOverheadsMonitorImpl monitor,
-        Date currentDate)
+        Date currentDate) throws Exception
     {
         logger
             .info("MailRuOverheadTask::execute - Job: MailRuOverheadTask started at "
@@ -74,7 +83,7 @@ public class MailRuOverheadTask implements PluginJob
 
     private void createOverheadTasks(
         OverheadValueSetService overheadValueSetService,
-        PluginSettingsManager settings)
+        PluginSettingsManager settings) throws Exception
     {
         String taskIssue = settings.getTaskIssue();
         String qaCfId = settings.getQaCFId();
@@ -86,14 +95,16 @@ public class MailRuOverheadTask implements PluginJob
         {
             logger
                 .error("MailRuOverheadTask::createOverheadTasks - task issue does not match any issue");
-            return;
+            throw new Exception(
+                "MailRuOverheadTask::createOverheadTasks - task issue does not match any issue");
         }
         if (componentManager.getCustomFieldManager().getCustomFieldObject(
             qaCfId) == null)
         {
             logger
                 .error("MailRuOverheadTask::createOverheadTasks - qaCfId does not matching any custom field");
-            return;
+            throw new Exception(
+                "MailRuOverheadTask::createOverheadTasks - qaCfId does not matching any custom field");
         }
 
         Collection<User> allUsers = componentManager.getUserUtil().getUsers();
@@ -140,7 +151,6 @@ public class MailRuOverheadTask implements PluginJob
                     newIssue.setSummary(sb.toString());
                     newIssue.setDescription(sb.toString());
                     newIssue.setAssignee(user);
-                    newIssue.setReporter(qaUser);
                     newIssue.setEstimate(overheadValue);
                     newIssue.setCustomFieldValue(componentManager
                         .getCustomFieldManager().getCustomFieldObject(qaCfId),
@@ -156,6 +166,8 @@ public class MailRuOverheadTask implements PluginJob
                     {
                         logger
                             .error("MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
+                        throw new Exception(
+                            "MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
                     }
                 }
             }
@@ -176,4 +188,33 @@ public class MailRuOverheadTask implements PluginJob
             return "";
         }
     }
+
+    private void sendEmail(User user, String subject, String message)
+    {
+        if (user.getEmailAddress() != null)
+        {
+            Email mail = new Email(user.getEmailAddress());
+            mail.setFrom("notifications@jira.ru"); // TODO stub here
+            mail.setBody(message);
+            mail.setSubject(subject);
+
+            try
+            {
+                ComponentManager.getInstance().getMailServerManager()
+                    .getDefaultSMTPMailServer().send(mail);
+            }
+            catch (MailException e)
+            {
+                logger
+                    .error("TaskGoalWorkflowPostFunction::sendEmail - Mail Exception occured.");
+                logger.error(e.getMessage());
+            }
+        }
+        else
+        {
+            logger.error("TaskGoalWorkflowPostFunction::sendEmail - User "
+                + user.getName() + " has no email.");
+        }
+    }
+
 }

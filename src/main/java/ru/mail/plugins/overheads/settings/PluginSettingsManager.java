@@ -19,6 +19,7 @@ public class PluginSettingsManager implements IPluginSettingsManager
 
     public static final String TASK_ISSUE_KEY = "taskissue";
     public static final String CF_QA_ID_KEY = "cfqaid";
+    public static final String USER_ADDRESSEE = "addressee";
 
     public static final String JOB_LAST_RUN_KEY = "joblastrun";
 
@@ -66,6 +67,18 @@ public class PluginSettingsManager implements IPluginSettingsManager
     public String getQaCFId()
     {
         return (String) getValue(CF_QA_ID_KEY);
+    }
+    
+    @Override
+    public String getAddressee()
+    {
+        return (String) getValue(USER_ADDRESSEE);
+    }
+
+    @Override
+    public void setAddressee(String user)
+    {
+        setValue(USER_ADDRESSEE, user);
     }
 
     @Override

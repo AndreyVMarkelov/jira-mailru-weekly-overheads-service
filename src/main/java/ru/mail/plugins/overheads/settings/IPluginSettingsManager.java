@@ -26,4 +26,8 @@ public interface IPluginSettingsManager
     public void setJobLastRun(Date date);
 
     public Date getJobLastRun();
+    
+    public String getAddressee();
+
+    public void setAddressee(String user);
 }
