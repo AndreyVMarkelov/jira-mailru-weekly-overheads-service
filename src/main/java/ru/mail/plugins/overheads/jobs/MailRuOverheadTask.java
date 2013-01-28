@@ -5,6 +5,7 @@
 package ru.mail.plugins.overheads.jobs;
 
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -156,6 +157,11 @@ public class MailRuOverheadTask implements PluginJob
                     newIssue.setCustomFieldValue(componentManager
                         .getCustomFieldManager().getCustomFieldObject(qaCfId),
                         qaUser);
+                    
+                    Date currentDate = new Date();
+                    Timestamp tsCurDate = new Timestamp(currentDate.getTime());
+                    newIssue.setCreated(tsCurDate);
+                    newIssue.setUpdated(tsCurDate);
 
                     try
                     {
