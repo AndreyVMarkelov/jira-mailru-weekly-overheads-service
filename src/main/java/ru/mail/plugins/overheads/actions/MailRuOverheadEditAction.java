@@ -34,6 +34,8 @@ import com.atlassian.sal.api.ApplicationProperties;
 
 public class MailRuOverheadEditAction extends JiraWebActionSupport
 {
+    private static final long serialVersionUID = -1472852852068396225L;
+
     private static final String DEFAULT_OVERHEAD = "0";
 
     private HashMap<String, UserOverheadData> overheads = new HashMap<String, UserOverheadData>();

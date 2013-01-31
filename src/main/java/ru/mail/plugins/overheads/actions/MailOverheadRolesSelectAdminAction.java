@@ -29,6 +29,8 @@ import com.atlassian.sal.api.ApplicationProperties;
 
 public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
 {
+    private static final long serialVersionUID = -5819695595451009463L;
+
     private LinkedHashMap<ProjectRole, ArrayList<ProjectRole>> roles = new LinkedHashMap<ProjectRole, ArrayList<ProjectRole>>();
 
     private final OverheadRolesService overheadRolesService;
