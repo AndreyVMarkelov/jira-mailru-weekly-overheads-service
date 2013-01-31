@@ -41,6 +41,7 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
     private final String qaId;
     private final String addressee;
     private final Date jobLastRun;
+    private final boolean forceNotificationMessage;
 
     public MailOverheadRolesSelectAdminAction(
         OverheadRolesService overheadRolesService,
@@ -56,6 +57,8 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         qaId = settings.getQaCFId();
         addressee = settings.getAddressee();
         jobLastRun = settings.getJobLastRun();
+        forceNotificationMessage = settings.isForceNotification();
+        settings.setForceNotification(false);
 
         cleanStoredRecords();
 
@@ -156,5 +159,10 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
     public String getAddressee()
     {
         return addressee;
+    }
+
+    public boolean isForceNotificationMessage()
+    {
+        return forceNotificationMessage;
     }
 }

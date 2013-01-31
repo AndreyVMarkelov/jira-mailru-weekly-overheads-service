@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import ru.mail.plugins.overheads.jobs.MailRuOverheadsMonitorImpl;
+import ru.mail.plugins.overheads.settings.PluginSettingsManager;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
@@ -28,7 +29,14 @@ public class OverheadGeneralPurposesService
 {
     private final Logger log = Logger
         .getLogger(OverheadGeneralPurposesService.class);
+    
+    private final PluginSettingsManager settings;
 
+    public OverheadGeneralPurposesService(PluginSettingsManager settings)
+    {
+        this.settings = settings;
+    }
+    
     @GET
     @Path("/forcejob")
     @Produces({MediaType.TEXT_HTML})
@@ -54,7 +62,8 @@ public class OverheadGeneralPurposesService
 
         MailRuOverheadsMonitorImpl jobMonitor = MailRuOverheadsMonitorImpl.getLinkToMonitor();
         jobMonitor.onStart();
-
+        settings.setForceNotification(true);
+        
         String referrer = req.getHeader("referer");
         URI uri;
         try
