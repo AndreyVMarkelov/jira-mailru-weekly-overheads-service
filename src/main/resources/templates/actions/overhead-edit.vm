@@ -44,7 +44,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
     </select>
 </td>
 <td width="10%" class="jiraformbody">
-    <input type="submit" value="$i18n.getText("mailru.overheads.edit.tab.table.button.change")">
+    <input class="aui-button" type="submit" value="$i18n.getText("mailru.overheads.edit.tab.table.button.change")">
 </td>
 </form>
 </tr>
