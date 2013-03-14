@@ -44,21 +44,19 @@ import com.atlassian.jira.util.I18nHelper;
 @Path("/overheadvalssrv")
 public class OverheadsValuesManagementService
 {
-    private final Logger log = Logger
-        .getLogger(OverheadsValuesManagementService.class);
+    private final Logger log = Logger.getLogger(OverheadsValuesManagementService.class);
+    private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
+        .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
+    private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+        .getComponentInstanceOfType(UserProjectHistoryManager.class);
 
     private final DefaultProjectRoleManager roleManager;
     private final OverheadRolesService overheadRolesService;
     private final OverheadValueSetService overheadValueSetService;
 
-    public OverheadsValuesManagementService(
-        OverheadRolesService overheadRolesService,
-        OverheadValueSetService overheadValueSetService)
+    public OverheadsValuesManagementService(OverheadRolesService overheadRolesService, OverheadValueSetService overheadValueSetService)
     {
-        ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
-        this.roleManager = new DefaultProjectRoleManager(
-            projectRoleAndActorStore);
+        this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.overheadRolesService = checkNotNull(overheadRolesService);
         this.overheadValueSetService = checkNotNull(overheadValueSetService);
     }
@@ -68,15 +66,13 @@ public class OverheadsValuesManagementService
     @Produces({MediaType.TEXT_HTML})
     public Response changeVal(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("OverheadsValuesManagementService::changeval - User is not logged");
-            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
         }
 
         String username = req.getParameter("username");
@@ -86,30 +82,21 @@ public class OverheadsValuesManagementService
         if (!Utils.isValidStr(username))
         {
             log.error("OverheadsValuesManagementService::changeval - Invalid params");
-            return Response.ok(i18n.getText("mailru.service.invalid.params"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.params")).status(400).build();
         }
 
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, user);
+        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, user);
 
         boolean isUsernameValid = false;
-        Collection<ProjectRole> projectRoles = roleManager.getProjectRoles(
-            user, currentProject);
-        User userParam = ComponentManager.getInstance().getUserUtil()
-            .getUser(username);
+        Collection<ProjectRole> projectRoles = roleManager.getProjectRoles(user, currentProject);
+        User userParam = ComponentManager.getInstance().getUserUtil().getUser(username);
 
         outerloop: for (ProjectRole projectRole : projectRoles)
         {
-            List<OverheadRoles> overheadRoles = overheadRolesService
-                .getRecordsByMaster(projectRole.getId());
+            List<OverheadRoles> overheadRoles = overheadRolesService.getRecordsByMaster(projectRole.getId());
             for (OverheadRoles entity : overheadRoles)
             {
-                if (roleManager.isUserInProjectRole(userParam,
-                    roleManager.getProjectRole(entity.getDetailRole()),
-                    currentProject))
+                if (roleManager.isUserInProjectRole(userParam, roleManager.getProjectRole(entity.getDetailRole()), currentProject))
                 {
                     isUsernameValid = true;
                     break outerloop;
@@ -120,9 +107,7 @@ public class OverheadsValuesManagementService
         if (!isUsernameValid)
         {
             log.error("OverheadsValuesManagementService::changeval - Access denied for this user or username is invalid");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.username"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.username")).status(400).build();
         }
 
         Long overheadValue = null;
@@ -134,17 +119,12 @@ public class OverheadsValuesManagementService
         {
             try
             {
-                overheadValue = ComponentManager.getInstance()
-                    .getJiraDurationUtils()
-                    .parseDuration(overhead, authCtx.getLocale());
+                overheadValue = ComponentManager.getInstance().getJiraDurationUtils().parseDuration(overhead, authCtx.getLocale());
             }
             catch (InvalidDurationException e1)
             {
                 log.error("OverheadsValuesManagementService::changeval - Invalid overhead format");
-                return Response
-                    .ok(i18n
-                        .getText("mailru.service.invalid.param.overhead.format"))
-                    .status(400).build();
+                return Response.ok(i18n.getText("mailru.service.invalid.param.overhead.format")).status(400).build();
             }
         }
 
@@ -159,8 +139,7 @@ public class OverheadsValuesManagementService
             qaValue = null;
         }
 
-        UsersOverhead usersOverhead = overheadValueSetService
-            .getRecordByUsername(username);
+        UsersOverhead usersOverhead = overheadValueSetService.getRecordByUsername(username);
         if (usersOverhead == null)
         {
             overheadValueSetService.addRecord(username, overheadValue, qaValue);
@@ -181,8 +160,7 @@ public class OverheadsValuesManagementService
         catch (URISyntaxException e)
         {
             log.error("OverheadsValuesManagementService::changeval - Invalid uri");
-            return Response.ok(i18n.getText("mailru.service.invalid.uri"))
-                .status(500).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
         }
 
         return Response.seeOther(uri).build();

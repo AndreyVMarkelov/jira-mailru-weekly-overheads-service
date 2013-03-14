@@ -30,6 +30,9 @@ import com.atlassian.sal.api.ApplicationProperties;
 public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
 {
     private static final long serialVersionUID = -5819695595451009463L;
+    
+    private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
+            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
 
     private LinkedHashMap<ProjectRole, ArrayList<ProjectRole>> roles = new LinkedHashMap<ProjectRole, ArrayList<ProjectRole>>();
 
@@ -50,8 +53,6 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         ApplicationProperties applicationProperties,
         PluginSettingsManager settings)
     {
-        ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
         this.overheadRolesService = checkNotNull(overheadRolesService);
         roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.applicationProperties = applicationProperties;
