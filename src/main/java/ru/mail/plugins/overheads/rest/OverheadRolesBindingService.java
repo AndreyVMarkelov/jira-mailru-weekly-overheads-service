@@ -148,6 +148,143 @@ public class OverheadRolesBindingService
     }
 
     @GET
+    @Path("/setassigneeid")
+    @Produces({MediaType.TEXT_HTML})
+    public Response setAssigneeId(@Context HttpServletRequest req)
+    {
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        I18nHelper i18n = authCtx.getI18nHelper();
+        User user = authCtx.getLoggedInUser();
+        if (user == null)
+        {
+            log.error("OverheadRolesBindingService::setAssigneeId - User is not logged");
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
+        }
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
+        {
+            log.error("OverheadRolesBindingService::setAssigneeId - User is not admin");
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
+        }
+        
+        String assigneeCfId = req.getParameter("assigneeid");
+        
+        if (ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(assigneeCfId) != null)
+        {
+            settings.setAssigneeCFId(assigneeCfId);
+            
+            String referrer = req.getHeader("referer");
+            URI uri;
+            try
+            {
+                uri = new URI(referrer);
+            }
+            catch (URISyntaxException e)
+            {
+                log.error("OverheadRolesBindingService::setAssigneeId - Invalid uri");
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
+            }
+            
+            return Response.seeOther(uri).build();
+        }
+        else
+        {
+            log.error("OverheadRolesBindingService::setAssigneeId - Invalid assigneeid param");
+            return Response.ok(i18n.getText("mailru.service.invalid.param.assigneid")).status(400).build();
+        }
+    }
+    
+    @GET
+    @Path("/setfeaturegoalid")
+    @Produces({MediaType.TEXT_HTML})
+    public Response setFeatureGoalId(@Context HttpServletRequest req)
+    {
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        I18nHelper i18n = authCtx.getI18nHelper();
+        User user = authCtx.getLoggedInUser();
+        if (user == null)
+        {
+            log.error("OverheadRolesBindingService::setFeatureGoalId - User is not logged");
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
+        }
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
+        {
+            log.error("OverheadRolesBindingService::setFeatureGoalId - User is not admin");
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
+        }
+        
+        String featuregoalCfId = req.getParameter("featuregoalid");
+        
+        if (ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(featuregoalCfId) != null)
+        {
+            settings.setFeatureGoalCFId(featuregoalCfId);
+            
+            String referrer = req.getHeader("referer");
+            URI uri;
+            try
+            {
+                uri = new URI(referrer);
+            }
+            catch (URISyntaxException e)
+            {
+                log.error("OverheadRolesBindingService::setFeatureGoalId - Invalid uri");
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
+            }
+            
+            return Response.seeOther(uri).build();
+        }
+        else
+        {
+            log.error("OverheadRolesBindingService::setFeatureGoalId - Invalid featuregoal param");
+            return Response.ok(i18n.getText("mailru.service.invalid.param.featuregoalid")).status(400).build();
+        }
+    }
+    @GET
+    @Path("/setseverityid")
+    @Produces({MediaType.TEXT_HTML})
+    public Response setSeverityId(@Context HttpServletRequest req)
+    {
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        I18nHelper i18n = authCtx.getI18nHelper();
+        User user = authCtx.getLoggedInUser();
+        if (user == null)
+        {
+            log.error("OverheadRolesBindingService::setSeverityId - User is not logged");
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
+        }
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
+        {
+            log.error("OverheadRolesBindingService::setSeverityId - User is not admin");
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
+        }
+        
+        String severityCfId = req.getParameter("severityid");
+        
+        if (ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(severityCfId) != null)
+        {
+            settings.setSeverityCFId(severityCfId);
+            
+            String referrer = req.getHeader("referer");
+            URI uri;
+            try
+            {
+                uri = new URI(referrer);
+            }
+            catch (URISyntaxException e)
+            {
+                log.error("OverheadRolesBindingService::setSeverityId - Invalid uri");
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
+            }
+            
+            return Response.seeOther(uri).build();
+        }
+        else
+        {
+            log.error("OverheadRolesBindingService::setSeverityId - Invalid severityid param");
+            return Response.ok(i18n.getText("mailru.service.invalid.param.severityid")).status(400).build();
+        }
+    }
+
+    @GET
     @Path("/setaddressee")
     @Produces({MediaType.TEXT_HTML})
     public Response setAddressee(@Context HttpServletRequest req)

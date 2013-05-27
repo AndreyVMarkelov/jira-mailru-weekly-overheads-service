@@ -34,10 +34,10 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
 <table width="100%" class="grid">
     <thead class="jiraformheader">
         <td>
-            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.label")</b>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.cfid.label")</b>
         </td>
         <td>
-            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.qaid.value")</b>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.cfid.value")</b>
         </td>
     </thead>
     <tr>
@@ -48,9 +48,42 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
             <td width="60%" class="jiraformbody">
                 <input id="task-qaid-input-id" type="text" name="qaid" value="$!action.getQaId()">
                     <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
-</td>
-</form>
-</tr>
+        </td>
+        </form>
+	</tr>
+	<tr>
+		<form id="overhead-assigneeid-form-id" name="overhead-assigneeid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setassigneeid" method="get">
+            <td width="40%" class="jiraformbody">
+                $i18n.getText("mailru.overheads.admin.tab.caption.assigneeid")
+            </td>
+            <td width="60%" class="jiraformbody">
+                <input id="task-assigneeid-input-id" type="text" name="assigneeid" value="$!action.getAssigneeId()">
+                    <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+        </td>
+        </form>
+	</tr>
+	<tr>
+		<form id="overhead-featuregoalid-form-id" name="overhead-featuregoalid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setfeaturegoalid" method="get">
+            <td width="40%" class="jiraformbody">
+                $i18n.getText("mailru.overheads.admin.tab.caption.featuregoalid")
+            </td>
+            <td width="60%" class="jiraformbody">
+                <input id="task-featuregoalid-input-id" type="text" name="featuregoalid" value="$!action.getFeatureGoalId()">
+                    <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+        </td>
+        </form>
+	</tr>
+	<tr>
+		<form id="overhead-severityid-form-id" name="overhead-severityid-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/setseverityid" method="get">
+            <td width="40%" class="jiraformbody">
+                $i18n.getText("mailru.overheads.admin.tab.caption.severityid")
+            </td>
+            <td width="60%" class="jiraformbody">
+                <input id="task-severityid-input-id" type="text" name="severityid" value="$!action.getSeverityId()">
+                    <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+        </td>
+        </form>
+	</tr>
 </table>
 </table>
 <table width="100%" class="grid">

@@ -44,6 +44,9 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
 
     private final String taskTemplate;
     private final String qaId;
+    private final String assigneeId;
+    private final String featureGoalId;
+    private final String severityId;
     private final String addressee;
     private final Date jobLastRun;
     private final boolean forceNotificationMessage;
@@ -58,6 +61,9 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         this.applicationProperties = applicationProperties;
         taskTemplate = settings.getTaskIssue();
         qaId = settings.getQaCFId();
+        assigneeId = settings.getAssigneeCFId();
+        featureGoalId = settings.getFeatureGoalCFId();
+        severityId = settings.getSeverityCFId();
         addressee = settings.getAddressee();
         jobLastRun = settings.getJobLastRun();
         forceNotificationMessage = settings.isForceNotification();
@@ -152,6 +158,21 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
     public String getQaId()
     {
         return qaId;
+    }
+
+    public String getAssigneeId()
+    {
+        return assigneeId;
+    }
+
+    public String getFeatureGoalId()
+    {
+        return featureGoalId;
+    }
+
+    public String getSeverityId()
+    {
+        return severityId;
     }
 
     public Date getJobLastRun()

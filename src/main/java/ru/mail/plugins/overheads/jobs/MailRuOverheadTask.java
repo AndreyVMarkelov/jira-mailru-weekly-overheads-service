@@ -21,8 +21,10 @@ import ru.mail.plugins.overheads.settings.PluginSettingsManager;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.exception.CreateException;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.mail.Email;
 import com.atlassian.mail.MailException;
 import com.atlassian.sal.api.scheduling.PluginJob;
@@ -88,6 +90,9 @@ public class MailRuOverheadTask implements PluginJob
     {
         String taskIssue = settings.getTaskIssue();
         String qaCfId = settings.getQaCFId();
+        String assigneeCfId = settings.getAssigneeCFId();
+        String featureGoalCfId = settings.getFeatureGoalCFId();
+        String severityId = settings.getSeverityCFId();
 
         ComponentManager componentManager = ComponentManager.getInstance();
         IssueManager issueManager = componentManager.getIssueManager();
@@ -145,14 +150,29 @@ public class MailRuOverheadTask implements PluginJob
 
                 if (overheadValue != null && overheadValue > 0)
                 {
+                    Issue templateIssue = issueManager.getIssueObject(taskIssue); 
                     MutableIssue newIssue = componentManager.getIssueFactory()
-                        .cloneIssue(issueManager.getIssueObject(taskIssue));
+                        .cloneIssue(templateIssue);
                     User qaUser = componentManager.getUserUtil().getUser(
                         overhead.getQaName());
 
                     newIssue.setSummary(taskSummary);
                     newIssue.setDescription(taskSummary);
                     newIssue.setAssignee(user);
+                    newIssue.setCustomFieldValue(componentManager
+                        .getCustomFieldManager().getCustomFieldObject(assigneeCfId),
+                        user);
+                    
+                    CustomField featureGoalCf = componentManager
+                            .getCustomFieldManager().getCustomFieldObject(featureGoalCfId);
+                    newIssue.setCustomFieldValue(featureGoalCf,
+                        templateIssue.getCustomFieldValue(featureGoalCf));
+
+                    CustomField severityCf = componentManager
+                            .getCustomFieldManager().getCustomFieldObject(severityId);
+                    newIssue.setCustomFieldValue(severityCf,
+                        templateIssue.getCustomFieldValue(severityCf));
+                    
                     newIssue.setEstimate(overheadValue);
                     newIssue.setCustomFieldValue(componentManager
                         .getCustomFieldManager().getCustomFieldObject(qaCfId),
@@ -172,7 +192,7 @@ public class MailRuOverheadTask implements PluginJob
                     catch (CreateException e)
                     {
                         logger
-                            .error("MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
+                            .error("MailRuOverheadTask::createOverheadTasks - Failed to create issue object. Message: " + e.getMessage());
                         throw new Exception(
                             "MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
                     }

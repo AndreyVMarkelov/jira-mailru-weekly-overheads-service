@@ -43,7 +43,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
     private static final String DEFAULT_OVERHEAD = "0";
 
-    private HashMap<String, UserOverheadData> overheads = new HashMap<String, UserOverheadData>();
+    private HashMap<User, UserOverheadData> overheads = new HashMap<User, UserOverheadData>();
 
     private final OverheadValueSetService overheadValueSetService;
 
@@ -73,7 +73,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
         Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
         Collection<User> allUsers = ComponentManager.getInstance().getUserUtil().getUsers();
-        Collection<String> displayUsers = new HashSet<String>();
+        Collection<User> displayUsers = new HashSet<User>();
         for (ProjectRole userRole : userRoles)
         {
             List<OverheadRoles> roles = overheadRolesService.getRecordsByMaster(userRole.getId());
@@ -85,14 +85,14 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
                 {
                     if (roleManager.isUserInProjectRole(aUser, detailRole, currentProject))
                     {
-                        displayUsers.add(aUser.getName());
+                        displayUsers.add(aUser);
                     }
                 }
             }
         }
-        for (String userName : displayUsers)
+        for (User displayUser : displayUsers)
         {
-            UsersOverhead overhead = overheadValueSetService.getRecordByUsername(userName);
+            UsersOverhead overhead = overheadValueSetService.getRecordByUsername(displayUser.getName());
             UserOverheadData data = new UserOverheadData();
             if (overhead != null)
             {
@@ -105,7 +105,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
                 data.setQaName(null);
                 data.setOverhead(DEFAULT_OVERHEAD);
             }
-            overheads.put(userName, data);
+            overheads.put(displayUser, data);
         }
     }
 
@@ -123,7 +123,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         }
     }
 
-    public HashMap<String, UserOverheadData> getOverheads()
+    public HashMap<User, UserOverheadData> getOverheads()
     {
         return overheads;
     }
