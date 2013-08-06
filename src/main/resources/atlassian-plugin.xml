@@ -17,8 +17,16 @@
 	<resource type="i18n" name="i18n" location="i18n/mailru-ao-overheads" />
 
 	<web-resource key="mail-overhead-roles-resources" name="overhead-roles resources">
+		<transformation extension="js">
+			<transformer key="jsI18n" />
+		</transformation>
+
 		<resource type="download" name="mail-style-resources.css"
 			location="resources/mail-style-resources.css" />
+		<resource type="download" name="mail-overheads-resources.js"
+			location="resources/mail-overheads-resources.js" />
+
+		<context>jira.general</context>
 	</web-resource>
 
 	<component key="mailru-overheads-plugin-settings-manager"

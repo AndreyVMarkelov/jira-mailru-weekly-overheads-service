@@ -9,47 +9,69 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
             #foreach ($error in $action.getErrorMessages())
                 <div class="error">$i18n.getText("$error")</div>
             #end
-            #else
-                <h2>$action.getText("mailru.overheads.edit.tab.title")</h2>
-                <table width="100%" class="grid">
-                    <thead class="jiraformheader">
-                        <td>
-                            <b>$action.getText("mailru.overheads.edit.tab.table.column.user")</b>
+        #else
+            <h2>$action.getText("mailru.overheads.edit.tab.title")</h2>
+            <table width="100%" class="grid">
+                <thead class="jiraformheader">
+                    <td>
+                        <b>$action.getText("mailru.overheads.edit.tab.table.column.user")</b>
+                    </td>
+                    <td>
+                        <b>$action.getText("mailru.overheads.edit.tab.table.column.overhead")</b>
+                    </td>
+                    <td>
+                        <b>$action.getText("mailru.overheads.edit.tab.table.column.qa")</b>
+                    </td>
+                    <td>
+                    </td>
+                </thead>
+				<tr>
+					<form name="overhead-change-form" action="$action.getBaseUrl()/rest/overheadvalssrv/1.0/overheadvalssrv/changeval" method="get">
+    			        <td width="40%" class="jiraformbody">
+    						<select name="username" size="1">
+    							<option value=""></option>
+    							#foreach($displayuser in $action.overheads.keySet())
+    								<option value="$displayuser.name">$displayuser.displayName</option>
+    							#end
+    						</select>
                         </td>
-                        <td>
-                            <b>$action.getText("mailru.overheads.edit.tab.table.column.overhead")</b>
+                        <td width="25%" class="jiraformbody">
+                            <input type="text" name="overhead" value="">
                         </td>
-                        <td>
-                            <b>$action.getText("mailru.overheads.edit.tab.table.column.qa")</b>
+                        <td width="25%" class="jiraformbody">
+                            <select class="select" name="qa" size="1">
+                                <option value=""></option>
+                                #foreach($user in $action.getAllUsers())
+                                    <option value="$user.name">${user.displayName}</option>
+                                #end
+                            </select>
                         </td>
-                        <td>
+                        <td width="10%" class="jiraformbody">
+                            <input class="aui-button" type="submit" value="$i18n.getText("mailru.overheads.edit.tab.table.button.change")">
                         </td>
-                    </thead>
-                    #foreach($displayuser in $action.overheads.keySet())
-                        <tr>
-                            <form id="overhead-change-$displayuser.name" name="overhead-change-form" action="$action.getBaseUrl()/rest/overheadvalssrv/1.0/overheadvalssrv/changeval" method="get">
-                                <td width="40%" class="jiraformbody">
-                                    <input type="hidden" name="username" value="$displayuser.name" id="ov-username-$displayuser.name">
-                                        $displayuser.displayName
-</td>
-<td width="25%" class="jiraformbody">
-    <input type="text" name="overhead" value="$action.overheads.get($displayuser).overhead" id="ov-user-overhead-$displayuser.name">
-</td>
-<td width="25%" class="jiraformbody">
-    <select class="select" id="ov-qa-select-$displayuser.name" name="qa">
-        <option value="" #if(!$action.overheads.get($displayuser).qaName) selected#end></option>
-            #foreach($user in $action.getAllUsers())
-                <option value="$user.name" #if($user.name == $action.overheads.get($displayuser).qaName) selected#end>${user.displayName}</option>
-            #end
-    </select>
-</td>
-<td width="10%" class="jiraformbody">
-    <input class="aui-button" type="submit" value="$i18n.getText("mailru.overheads.edit.tab.table.button.change")">
-</td>
-</form>
-</tr>
-                    #end
-</table>
+					</form>
+				</tr>
+				<tr>
+					<td width="40%" class="jiraformbody">
+						<select id="ov-overhead-user-selector" size="1">
+							<option value=""></option>
+							#foreach($displayuser in $action.overheads.keySet())
+								<option value="$displayuser.name">$displayuser.displayName</option>
+							#end
+						</select>
+                    </td>
+                    <td width="25%" class="jiraformbody">
+						<div id="ov-overhead-time-displayer">
+						</div>
+                    </td>
+                    <td width="25%" class="jiraformbody">
+                        <div id="ov-overhead-qa-displayer">
+						</div>
+                    </td>
+                    <td width="10%" class="jiraformbody">
+                    </td>
+				</tr>
+            </table>
         #end
 </body>
 </html>

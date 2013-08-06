@@ -31,6 +31,7 @@ import ru.mail.plugins.overheads.entities.UsersOverhead;
 import com.atlassian.core.util.InvalidDurationException;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.Permissions;
@@ -164,5 +165,46 @@ public class OverheadsValuesManagementService
         }
 
         return Response.seeOther(uri).build();
+    }
+  
+    @GET
+    @Path("/getoverheaddata")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getOverheadData(@Context HttpServletRequest req)
+    {
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
+        I18nHelper i18n = authCtx.getI18nHelper();
+        User user = authCtx.getLoggedInUser();
+        if (user == null)
+        {
+            log.error("OverheadsValuesManagementService::getOverheadData - User is not logged");
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
+        }
+        
+        String username = req.getParameter("username");
+        
+        User aUser = ComponentAccessor.getUserManager().getUser(username);
+        if (aUser == null)
+        {
+            log.error("OverheadsValuesManagementService::getOverheadData - Invalid params");
+            return Response.ok(i18n.getText("mailru.service.invalid.params")).status(400).build();
+        }
+        
+        UsersOverhead usersOverhead = overheadValueSetService.getRecordByUsername(username);
+        OverheadDataEntity ent = new OverheadDataEntity();
+        if (usersOverhead != null)
+        {
+            User qa = ComponentAccessor.getUserManager().getUser(usersOverhead.getQaName());
+            if (qa != null)
+            {
+                ent.setQa(qa.getDisplayName());
+            }
+            if (usersOverhead.getOverhead() != null)
+            {
+                ent.setTime(ComponentManager.getInstance().getJiraDurationUtils().getFormattedDuration(usersOverhead.getOverhead(), authCtx.getLocale()));
+            }
+        }
+        
+        return Response.ok(ent).build();
     }
 }

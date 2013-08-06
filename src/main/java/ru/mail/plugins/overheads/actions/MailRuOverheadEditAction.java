@@ -7,10 +7,15 @@ package ru.mail.plugins.overheads.actions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
 import ru.mail.plugins.overheads.ao.OverheadValueSetService;
@@ -20,6 +25,7 @@ import ru.mail.plugins.overheads.structures.UserOverheadData;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.Permissions;
@@ -43,7 +49,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
     private static final String DEFAULT_OVERHEAD = "0";
 
-    private HashMap<User, UserOverheadData> overheads = new HashMap<User, UserOverheadData>();
+    private Map<User, UserOverheadData> overheads = new LinkedHashMap<User, UserOverheadData>();
 
     private final OverheadValueSetService overheadValueSetService;
 
@@ -51,7 +57,16 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
     private final ApplicationProperties applicationProperties;
     
-    private final Collection<User> allUsers;
+    private final List<User> allUsers;
+    
+    private class UserComparator implements Comparator<User>
+    {
+        @Override
+        public int compare(User o1, User o2)
+        {
+            return o1.getDisplayName().compareTo(o2.getDisplayName());
+        }
+    }
 
     public MailRuOverheadEditAction(OverheadRolesService overheadRolesService, OverheadValueSetService overheadValueSetService,
         ApplicationProperties applicationProperties)
@@ -59,7 +74,14 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         this.overheadValueSetService = checkNotNull(overheadValueSetService);
         this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.applicationProperties = applicationProperties;
-        this.allUsers = ComponentManager.getInstance().getUserUtil().getUsers();
+        Set<User> userSet = ComponentAccessor.getUserManager().getAllUsers();
+        List<User> userList = new ArrayList<User>(userSet.size());
+        for (User user : userSet)
+        {
+            userList.add(user);
+        }
+        Collections.sort(userList, new UserComparator());
+        this.allUsers = userList;
 
         cleanStoredRecords();
 
@@ -75,7 +97,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
 
         Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
-        Collection<User> displayUsers = new HashSet<User>();
+        List<User> displayUsers = new LinkedList<User>();
         for (ProjectRole userRole : userRoles)
         {
             List<OverheadRoles> roles = overheadRolesService.getRecordsByMaster(userRole.getId());
@@ -92,6 +114,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
                 }
             }
         }
+        Collections.sort(displayUsers, new UserComparator());
         for (User displayUser : displayUsers)
         {
             UsersOverhead overhead = overheadValueSetService.getRecordByUsername(displayUser.getName());
@@ -125,7 +148,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         }
     }
 
-    public HashMap<User, UserOverheadData> getOverheads()
+    public Map<User, UserOverheadData> getOverheads()
     {
         return overheads;
     }
@@ -135,7 +158,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         return applicationProperties.getBaseUrl();
     }
 
-    public Collection<User> getAllUsers()
+    public List<User> getAllUsers()
     {
         return allUsers;
     }
