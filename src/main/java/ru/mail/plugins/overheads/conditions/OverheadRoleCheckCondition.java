@@ -7,31 +7,24 @@ package ru.mail.plugins.overheads.conditions;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
 import ru.mail.plugins.overheads.entities.OverheadRoles;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.plugin.webfragment.conditions.AbstractJiraCondition;
+import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.project.Project;
-import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.security.roles.DefaultProjectRoleManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleAndActorStore;
 import com.atlassian.jira.user.UserProjectHistoryManager;
-import com.atlassian.plugin.PluginParseException;
-import com.atlassian.plugin.web.Condition;
 
 
-public class OverheadRoleCheckCondition implements Condition
+public class OverheadRoleCheckCondition extends AbstractJiraCondition implements IOverheadRoleCheckCondition
 {
-
-    private final Logger log = Logger.getLogger(OverheadRoleCheckCondition.class);
-
     private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
         .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
     private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
@@ -48,21 +41,9 @@ public class OverheadRoleCheckCondition implements Condition
     }
 
     @Override
-    public void init(Map<String, String> params) throws PluginParseException
+    public boolean shouldDisplay(User user, JiraHelper jiraHelper)
     {
-    }
-
-    @Override
-    public boolean shouldDisplay(Map<String, Object> context)
-    {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
-        User user = authCtx.getLoggedInUser();
-        if (user == null)
-        {
-            log.info("OverheadRoleCheckCondition::shouldDisplay - User is not logged");
-            return false;
-        }
-        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
+        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, user);
 
         Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
         List<OverheadRoles> recs;
@@ -78,5 +59,4 @@ public class OverheadRoleCheckCondition implements Condition
 
         return false;
     }
-
 }
