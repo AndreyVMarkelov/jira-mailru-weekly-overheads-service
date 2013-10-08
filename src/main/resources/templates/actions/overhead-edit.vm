@@ -41,7 +41,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
                         <td width="25%" class="jiraformbody">
                             <select class="select" name="qa" size="1">
                                 <option value=""></option>
-                                #foreach($user in $action.getAllUsers())
+                                #foreach($user in $action.qaUsers)
                                     <option value="$user.name">${user.displayName}</option>
                                 #end
                             </select>

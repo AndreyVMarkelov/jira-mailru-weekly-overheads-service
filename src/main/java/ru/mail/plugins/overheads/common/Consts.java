@@ -5,7 +5,13 @@
 package ru.mail.plugins.overheads.common;
 
 
-public interface Consts
+
+public class Consts
 {
-    String PLUGIN_KEY_MAILRU_OVERHEADS = "MAILRU-OVERHEADS";
+    public static final String PLUGIN_KEY_MAILRU_OVERHEADS = "MAILRU-OVERHEADS";
+    
+    public static String getConstant(String key)
+    {
+        return OverheadsUtils.getConstantValue(key);
+    }
 }

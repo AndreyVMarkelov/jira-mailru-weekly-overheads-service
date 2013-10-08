@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
 import ru.mail.plugins.overheads.ao.OverheadValueSetService;
-import ru.mail.plugins.overheads.common.Utils;
+import ru.mail.plugins.overheads.common.OverheadsUtils;
 import ru.mail.plugins.overheads.entities.OverheadRoles;
 import ru.mail.plugins.overheads.entities.UsersOverhead;
 
@@ -80,7 +80,7 @@ public class OverheadsValuesManagementService
         String overhead = req.getParameter("overhead");
         String qa = req.getParameter("qa");
 
-        if (!Utils.isValidStr(username))
+        if (!OverheadsUtils.isValidStr(username))
         {
             log.error("OverheadsValuesManagementService::changeval - Invalid params");
             return Response.ok(i18n.getText("mailru.service.invalid.params")).status(400).build();
