@@ -8,6 +8,8 @@ package ru.mail.plugins.overheads.conditions;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
 import ru.mail.plugins.overheads.entities.OverheadRoles;
 
@@ -30,6 +32,8 @@ public class OverheadRoleCheckCondition extends AbstractJiraCondition implements
     private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
         .getComponentInstanceOfType(UserProjectHistoryManager.class);
 
+    private final Logger log = Logger.getLogger(OverheadRoleCheckCondition.class);
+
     private final OverheadRolesService overheadRolesService;
 
     private final DefaultProjectRoleManager roleManager;
@@ -37,24 +41,38 @@ public class OverheadRoleCheckCondition extends AbstractJiraCondition implements
     public OverheadRoleCheckCondition(OverheadRolesService overheadRolesService)
     {
         this.overheadRolesService = overheadRolesService;
+        log.error("Constructor runned");
+        log.error(overheadRolesService);
         this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
     }
 
     @Override
     public boolean shouldDisplay(User user, JiraHelper jiraHelper)
     {
-        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, user);
-
-        Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
-        List<OverheadRoles> recs;
-
-        for (ProjectRole role : userRoles)
+        try
         {
-            recs = overheadRolesService.getRecordsByMaster(role.getId());
-            if (recs != null && recs.size() > 0)
+            Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, user);
+            if (currentProject != null)
             {
-                return true;
+                Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
+                List<OverheadRoles> recs;
+
+                if (userRoles != null)
+                {
+                    for (ProjectRole role : userRoles)
+                    {
+                        recs = overheadRolesService.getRecordsByMaster(role.getId());
+                        if (recs != null && recs.size() > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
             }
+        }
+        catch (Exception e)
+        {
+            log.error("OverheadRoleCheckCondition::shouldDisplay - Exception ocured " + e.getMessage());
         }
 
         return false;
