@@ -144,6 +144,7 @@ public class MailRuOverheadTask implements PluginJob
                     newIssue.setSummary(taskSummary);
                     newIssue.setDescription(taskSummary);
                     newIssue.setAssignee(user);
+                    newIssue.setSecurityLevelId(null);
                     newIssue.setCustomFieldValue(
                         componentManager.getCustomFieldManager().getCustomFieldObject(Long.valueOf(Consts.getConstant("CF_ORIGINAL_ESTIMATE_ID"))),
                         overheadValue);
@@ -185,7 +186,7 @@ public class MailRuOverheadTask implements PluginJob
         JiraWorkflow taskWorkflow;
         try
         {
-            taskWorkflow = ComponentManager.getInstance().getWorkflowManager().getWorkflow(issue);
+            taskWorkflow = ComponentManager.getInstance().getWorkflowManager().getWorkflow(Consts.getConstant("WORKFLOW_A1_TASKBUG_NAME"));
         }
         catch (WorkflowException e)
         {
