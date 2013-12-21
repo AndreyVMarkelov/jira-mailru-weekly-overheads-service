@@ -55,7 +55,7 @@ public class OverheadValueSetServiceImpl implements OverheadValueSetService
     @Override
     public UsersOverhead getRecordByUsername(String userName)
     {
-        UsersOverhead[] recs = ao.find(UsersOverhead.class, "user_name = ?",
+        UsersOverhead[] recs = ao.find(UsersOverhead.class, "USER_NAME = ?",
             userName);
         if (recs != null && recs.length > 0)
         {

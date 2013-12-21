@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.mail.jira.plugins</groupId>
 	<artifactId>mail-weekly-overhead</artifactId>
-	<version>1.1.9</version>
+	<version>1.2.0</version>
 	<organization>
 		<name>Mail.Ru Group</name>
 		<url>http://www.mail.ru</url>
@@ -91,7 +91,7 @@
 	</build>
 	<properties>
 		<jira.version>5.0.4</jira.version>
-		<ao.version>0.18.5</ao.version>
+		<ao.version>0.18.2</ao.version>
 		<jira.data.version>5.0</jira.data.version>
 		<amps.version>4.0</amps.version>
 	</properties>
