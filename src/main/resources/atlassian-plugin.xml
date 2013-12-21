@@ -29,6 +29,14 @@
 		<context>jira.general</context>
 	</web-resource>
 
+	<!-- external component-->
+	<component key="mailru-overheads-condition-component"
+		name="Overheads condition component" class="ru.mail.plugins.overheads.conditions.OverheadRoleCheckCondition"
+		public="true">
+		<interface>ru.mail.plugins.overheads.conditions.IOverheadRoleCheckCondition
+		</interface>
+	</component>
+
 	<component key="mailru-overheads-plugin-settings-manager"
 		name="Plugin settings manager" class="ru.mail.plugins.overheads.settings.PluginSettingsManager" />
 	<component-import key="pluginSettingsFactory">
