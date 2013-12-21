@@ -78,78 +78,88 @@ public class MailRuOverheadTask implements PluginJob
         PluginSettingsManager settings)
     {
         String taskIssue = settings.getTaskIssue();
-        if (Utils.isValidStr(taskIssue))
+        String qaCfId = settings.getQaCFId();
+
+        ComponentManager componentManager = ComponentManager.getInstance();
+        IssueManager issueManager = componentManager.getIssueManager();
+
+        if (issueManager.getIssueObject(taskIssue) == null)
         {
-            ComponentManager componentManager = ComponentManager.getInstance();
-            IssueManager issueManager = componentManager.getIssueManager();
-            Collection<User> allUsers = componentManager.getUserUtil()
-                .getUsers();
+            logger
+                .error("MailRuOverheadTask::createOverheadTasks - task issue does not match any issue");
+            return;
+        }
+        if (componentManager.getCustomFieldManager().getCustomFieldObject(
+            qaCfId) == null)
+        {
+            logger
+                .error("MailRuOverheadTask::createOverheadTasks - qaCfId does not matching any custom field");
+            return;
+        }
 
-            Calendar calendar = Calendar.getInstance();
+        Collection<User> allUsers = componentManager.getUserUtil().getUsers();
 
-            long startTime = calendar.getTimeInMillis();
-            int today = calendar.get(Calendar.DAY_OF_WEEK);
-            if (today <= Calendar.MONDAY)
-            {
-                startTime += Math.abs(Calendar.MONDAY - today)
-                    * MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
-            }
-            else
-            {
-                startTime += Math.abs(7 - today + Calendar.MONDAY)
-                    * MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
-            }
+        Calendar calendar = Calendar.getInstance();
 
-            long endTime = startTime
-                + MailRuOverheadsMonitorImpl.REPEAT_INTERVAL
-                - MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
-            StringBuilder sb = new StringBuilder();
-            sb.append("[week ");
-            sb.append(formatDate(new Date(startTime)));
-            sb.append('-');
-            sb.append(formatDate(new Date(endTime)));
-            sb.append("] Недельные оверхеды");
-
-            for (User user : allUsers)
-            {
-                UsersOverhead overhead = overheadValueSetService
-                    .getRecordByUsername(user.getName());
-                if (overhead != null)
-                {
-                    Long overheadValue = overhead.getOverhead();
-
-                    if (overheadValue != null && overheadValue > 0)
-                    {
-                        MutableIssue newIssue = componentManager
-                            .getIssueFactory().cloneIssue(
-                                issueManager.getIssueObject(taskIssue));
-
-                        newIssue.setSummary(sb.toString());
-                        newIssue.setDescription(sb.toString());
-                        newIssue.setAssignee(user);
-                        newIssue.setReporter(componentManager.getUserUtil()
-                            .getUser(overhead.getQaName()));
-                        newIssue.setEstimate(overheadValue);
-
-                        try
-                        {
-                            issueManager.createIssueObject(user, newIssue);
-                            logger
-                                .info("MailRuOverheadTask::createOverheadTasks - Overhead issue created successfully");
-                        }
-                        catch (CreateException e)
-                        {
-                            logger
-                                .error("MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
-                        }
-                    }
-                }
-            }
+        long startTime = calendar.getTimeInMillis();
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        if (today <= Calendar.MONDAY)
+        {
+            startTime += Math.abs(Calendar.MONDAY - today)
+                * MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
         }
         else
         {
-            logger
-                .error("MailRuOverheadTask::createOverheadTasks - Missing template task issue");
+            startTime += Math.abs(7 - today + Calendar.MONDAY)
+                * MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
+        }
+
+        long endTime = startTime + MailRuOverheadsMonitorImpl.REPEAT_INTERVAL
+            - MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[week ");
+        sb.append(formatDate(new Date(startTime)));
+        sb.append('-');
+        sb.append(formatDate(new Date(endTime)));
+        sb.append("] Недельные оверхеды");
+
+        for (User user : allUsers)
+        {
+            UsersOverhead overhead = overheadValueSetService
+                .getRecordByUsername(user.getName());
+            if (overhead != null)
+            {
+                Long overheadValue = overhead.getOverhead();
+
+                if (overheadValue != null && overheadValue > 0)
+                {
+                    MutableIssue newIssue = componentManager.getIssueFactory()
+                        .cloneIssue(issueManager.getIssueObject(taskIssue));
+                    User qaUser = componentManager.getUserUtil().getUser(
+                        overhead.getQaName());
+
+                    newIssue.setSummary(sb.toString());
+                    newIssue.setDescription(sb.toString());
+                    newIssue.setAssignee(user);
+                    newIssue.setReporter(qaUser);
+                    newIssue.setEstimate(overheadValue);
+                    newIssue.setCustomFieldValue(componentManager
+                        .getCustomFieldManager().getCustomFieldObject(qaCfId),
+                        qaUser);
+
+                    try
+                    {
+                        issueManager.createIssueObject(user, newIssue);
+                        logger
+                            .info("MailRuOverheadTask::createOverheadTasks - Overhead issue created successfully");
+                    }
+                    catch (CreateException e)
+                    {
+                        logger
+                            .error("MailRuOverheadTask::createOverheadTasks - Failed to create issue object");
+                    }
+                }
+            }
         }
     }
 

@@ -37,6 +37,7 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
     private final ApplicationProperties applicationProperties;
 
     private final String taskTemplate;
+    private final String qaId;
 
     public MailOverheadRolesSelectAdminAction(
         OverheadRolesService overheadRolesService,
@@ -49,6 +50,7 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.applicationProperties = applicationProperties;
         taskTemplate = settings.getTaskIssue();
+        qaId = settings.getQaCFId();
 
         cleanStoredRecords();
 
@@ -136,4 +138,8 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         return taskTemplate;
     }
 
+    public String getQaId()
+    {
+        return qaId;
+    }
 }

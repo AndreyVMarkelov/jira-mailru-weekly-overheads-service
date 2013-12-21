@@ -18,6 +18,10 @@ public interface IPluginSettingsManager
 
     public String getTaskIssue();
 
+    public void setQaCFId(String cfId);
+    
+    public String getQaCFId();
+
     public void setJobLastRun(Date date);
     
     public Date getJobLastRun();
