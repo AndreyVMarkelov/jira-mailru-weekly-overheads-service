@@ -4,7 +4,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
 <html>
     <head>
         <meta name="decorator" content="admin"/>
-        <meta name="admin.active.section" content="admin_plugins_menu/mailru-admin-section"/>
+        <meta name="admin.active.section" content="system.admin/globalsettings"/>
         <title>$i18n.getText("mailru.overheads.admin.tab.roles.page.caption")</title>
     </head>
     <body>
