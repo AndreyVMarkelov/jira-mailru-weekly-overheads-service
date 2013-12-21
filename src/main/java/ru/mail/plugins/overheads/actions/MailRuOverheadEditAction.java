@@ -50,13 +50,16 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
     private final DefaultProjectRoleManager roleManager;
 
     private final ApplicationProperties applicationProperties;
+    
+    private final Collection<User> allUsers;
 
     public MailRuOverheadEditAction(OverheadRolesService overheadRolesService, OverheadValueSetService overheadValueSetService,
         ApplicationProperties applicationProperties)
     {
         this.overheadValueSetService = checkNotNull(overheadValueSetService);
-        roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
+        this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.applicationProperties = applicationProperties;
+        this.allUsers = ComponentManager.getInstance().getUserUtil().getUsers();
 
         cleanStoredRecords();
 
@@ -72,7 +75,6 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
 
         Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
-        Collection<User> allUsers = ComponentManager.getInstance().getUserUtil().getUsers();
         Collection<User> displayUsers = new HashSet<User>();
         for (ProjectRole userRole : userRoles)
         {
@@ -135,6 +137,6 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
     public Collection<User> getAllUsers()
     {
-        return ComponentManager.getInstance().getUserUtil().getUsers();
+        return allUsers;
     }
 }
