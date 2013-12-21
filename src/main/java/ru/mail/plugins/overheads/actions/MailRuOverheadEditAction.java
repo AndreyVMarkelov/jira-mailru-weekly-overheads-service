@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,16 +20,19 @@ import java.util.Set;
 
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
 import ru.mail.plugins.overheads.ao.OverheadValueSetService;
+import ru.mail.plugins.overheads.common.Consts;
 import ru.mail.plugins.overheads.entities.OverheadRoles;
 import ru.mail.plugins.overheads.entities.UsersOverhead;
 import ru.mail.plugins.overheads.structures.UserOverheadData;
 
+import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.Permissions;
+import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.security.roles.DefaultProjectRoleManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleAndActorStore;
@@ -44,7 +48,7 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
     private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
         .getComponentInstanceOfType(UserProjectHistoryManager.class);
-    
+
     private static final long serialVersionUID = -1472852852068396225L;
 
     private static final String DEFAULT_OVERHEAD = "0";
@@ -56,9 +60,11 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
     private final DefaultProjectRoleManager roleManager;
 
     private final ApplicationProperties applicationProperties;
-    
+
     private final List<User> allUsers;
     
+    private List<User> qaUsers;
+
     private class UserComparator implements Comparator<User>
     {
         @Override
@@ -115,6 +121,9 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
             }
         }
         Collections.sort(displayUsers, new UserComparator());
+        
+        initQAUsersSet();
+
         for (User displayUser : displayUsers)
         {
             UsersOverhead overhead = overheadValueSetService.getRecordByUsername(displayUser.getName());
@@ -146,6 +155,37 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
                 overheadValueSetService.removeRecord(usersOverhead);
             }
         }
+    }
+
+    private void initQAUsersSet()
+    {
+        GroupManager groupManager = ComponentAccessor.getGroupManager();
+        String[] groups = Consts.getConstant("A1_USERS_GROUPS").split(",", -1);
+        if (groups != null && groups.length > 0)
+        {
+            Collection<String> groupz = new HashSet<String>(groups.length);
+
+            for (int i = 0; i < groups.length; i++)
+            {
+                Group gr = groupManager.getGroup(groups[i]);
+                if (gr != null)
+                {
+                    groupz.add(gr.getName());
+                }
+            }
+
+            qaUsers = new LinkedList<User>(ComponentAccessor.getUserUtil().getUsersInGroupNames(groupz));
+            Collections.sort(qaUsers, new UserComparator());
+        }
+        else
+        {
+            qaUsers = new LinkedList<User>();
+        }
+    }
+
+    public List<User> getQaUsers()
+    {
+        return qaUsers;
     }
 
     public Map<User, UserOverheadData> getOverheads()

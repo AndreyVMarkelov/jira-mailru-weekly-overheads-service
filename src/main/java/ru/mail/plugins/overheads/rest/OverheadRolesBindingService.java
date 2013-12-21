@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import ru.mail.plugins.overheads.ao.OverheadRolesService;
-import ru.mail.plugins.overheads.common.Utils;
+import ru.mail.plugins.overheads.common.OverheadsUtils;
 import ru.mail.plugins.overheads.entities.OverheadRoles;
 import ru.mail.plugins.overheads.settings.PluginSettingsManager;
 
@@ -76,7 +76,7 @@ public class OverheadRolesBindingService
 
         String taskTemplate = req.getParameter("task");
 
-        if (!Utils.isValidStr(taskTemplate) || ComponentManager.getInstance().getIssueManager().getIssueObject(taskTemplate) != null)
+        if (!OverheadsUtils.isValidStr(taskTemplate) || ComponentManager.getInstance().getIssueManager().getIssueObject(taskTemplate) != null)
         {
             settings.setTaskIssue(taskTemplate);
 
@@ -409,7 +409,7 @@ public class OverheadRolesBindingService
     private boolean constainsRole(Long[] array, Long roleId)
     {
         boolean result = false;
-        if (!Utils.isEmpty(array) && roleId != null)
+        if (!OverheadsUtils.isEmpty(array) && roleId != null)
         {
             int i = 0;
             while (!result && i < array.length)
@@ -424,7 +424,7 @@ public class OverheadRolesBindingService
     private OverheadRoles getRecordWithDetail(List<OverheadRoles> records, Long detail)
     {
         OverheadRoles result = null;
-        if (!Utils.isEmpty(records) && detail != null)
+        if (!OverheadsUtils.isEmpty(records) && detail != null)
         {
             for (OverheadRoles rec : records)
             {
@@ -458,7 +458,7 @@ public class OverheadRolesBindingService
     private boolean isValidRoles(String[] roles)
     {
         boolean res = true;
-        if (Utils.isEmpty(roles))
+        if (OverheadsUtils.isEmpty(roles))
         {
             return res;
         }

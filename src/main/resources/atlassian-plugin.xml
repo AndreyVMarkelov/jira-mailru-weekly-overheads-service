@@ -21,6 +21,8 @@
 			<transformer key="jsI18n" />
 		</transformation>
 
+		<dependency>ru.mail.jira.plugins.utils:mailru-utils-common-resources</dependency>
+
 		<resource type="download" name="mail-style-resources.css"
 			location="resources/mail-style-resources.css" />
 		<resource type="download" name="mail-overheads-resources.js"
