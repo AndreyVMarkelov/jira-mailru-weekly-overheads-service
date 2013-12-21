@@ -26,7 +26,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
                         </td>
                         <td width="60%" class="jiraformbody">
                             <input id="task-template-input-id" type="text" name="task" value="$!action.getTaskTemplate()">
-                                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+                                <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
 </td>
 </form>
 </tr>
@@ -47,7 +47,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
             </td>
             <td width="60%" class="jiraformbody">
                 <input id="task-qaid-input-id" type="text" name="qaid" value="$!action.getQaId()">
-                    <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+                    <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
 </td>
 </form>
 </tr>
@@ -69,13 +69,13 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
             </td>
             <td width="60%" class="jiraformbody">
                 <input id="addressee-input-id" type="text" name="addressee" value="$!action.addressee">
-                    <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+                    <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
 </td>
 </form>
 </tr>
 </table>
 <form id="overhead-force-job-form-id" name="overhead-force-job-form" action="$action.getBaseUrl()/rest/overheadcommonsrv/1.0/overheadcommonsrv/forcejob" method="get">
-       <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.forcejob")">
+       <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.forcejob")">
 </form>
 #if ($action.isForceNotificationMessage())
 	<p style="color:#009933"><b>$action.getText("mailru.overheads.admin.tab.force.notification")</b></p>
@@ -105,7 +105,7 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
                         <option value="$dr.id">$dr.name</option>
                     #end
                 </select>
-                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+                <input class="aui-button" type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
 </td>
 </form>
 </tr>
