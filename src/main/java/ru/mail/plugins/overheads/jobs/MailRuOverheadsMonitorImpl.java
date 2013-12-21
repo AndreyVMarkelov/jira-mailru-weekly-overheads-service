@@ -74,6 +74,8 @@ public class MailRuOverheadsMonitorImpl implements LifecycleAware
         pluginScheduler.scheduleJob(JOB_NAME, MailRuOverheadTask.class,
             new HashMap<String, Object>()
             {
+                private static final long serialVersionUID = 7535776675498350663L;
+
                 {
                     put(KEY, MailRuOverheadsMonitorImpl.this);
                 }
