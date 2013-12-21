@@ -36,7 +36,7 @@ public class MailRuOverheadsMonitorImpl implements LifecycleAware
 
     private boolean isInited = false;
 
-    private static MailRuOverheadsMonitorImpl jobLink;
+    private static MailRuOverheadsMonitorImpl monitorLink;
 
     public MailRuOverheadsMonitorImpl(PluginScheduler pluginScheduler,
         OverheadValueSetService overheadValueSetService,
@@ -45,12 +45,12 @@ public class MailRuOverheadsMonitorImpl implements LifecycleAware
         this.pluginScheduler = pluginScheduler;
         this.overheadValueSetService = overheadValueSetService;
         this.settings = settings;
-        jobLink = this;
+        monitorLink = this;
     }
 
-    public static MailRuOverheadsMonitorImpl getLinkToJob()
+    public static MailRuOverheadsMonitorImpl getLinkToMonitor()
     {
-        return jobLink;
+        return monitorLink;
     }
 
     public void onStart()

@@ -169,6 +169,60 @@ public class OverheadRolesBindingService
     }
 
     @GET
+    @Path("/setaddressee")
+    @Produces({MediaType.TEXT_HTML})
+    public Response setAddressee(@Context HttpServletRequest req)
+    {
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
+            .getJiraAuthenticationContext();
+        I18nHelper i18n = authCtx.getI18nHelper();
+        User user = authCtx.getLoggedInUser();
+        if (user == null)
+        {
+            log.error("OverheadRolesBindingService::setAddressee - User is not logged");
+            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
+                .status(401).build();
+        }
+        if (!ComponentManager.getInstance().getPermissionManager()
+            .hasPermission(Permissions.ADMINISTER, user))
+        {
+            log.error("OverheadRolesBindingService::setAddressee - User is not admin");
+            return Response.ok(i18n.getText("mailru.service.user.notadmin"))
+                .status(403).build();
+        }
+
+        String addressee = req.getParameter("addressee");
+
+        if (ComponentManager.getInstance().getUserUtil()
+            .getUserObject(addressee) != null)
+        {
+            settings.setAddressee(addressee);
+            
+            String referrer = req.getHeader("referer");
+            URI uri;
+            try
+            {
+                uri = new URI(referrer);
+            }
+            catch (URISyntaxException e)
+            {
+                log.error("OverheadRolesBindingService::setAddressee - Invalid uri");
+                return Response.ok(i18n.getText("mailru.service.invalid.uri"))
+                    .status(500).build();
+            }
+
+            return Response.seeOther(uri).build();
+        }
+        else
+        {
+            log.error("OverheadRolesBindingService::setAddressee - Invalid user");
+            return Response
+                .ok(i18n.getText("mailru.service.invalid.param.addressee"))
+                .status(400).build();
+        }
+    }
+
+    @GET
     @Path("/bind")
     @Produces({MediaType.TEXT_HTML})
     public Response bind(@Context HttpServletRequest req)

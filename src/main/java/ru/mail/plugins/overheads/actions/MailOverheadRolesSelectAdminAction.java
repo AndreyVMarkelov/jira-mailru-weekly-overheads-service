@@ -9,6 +9,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
 
     private final String taskTemplate;
     private final String qaId;
+    private final String addressee;
+    private final Date jobLastRun;
 
     public MailOverheadRolesSelectAdminAction(
         OverheadRolesService overheadRolesService,
@@ -51,6 +54,8 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
         this.applicationProperties = applicationProperties;
         taskTemplate = settings.getTaskIssue();
         qaId = settings.getQaCFId();
+        addressee = settings.getAddressee();
+        jobLastRun = settings.getJobLastRun();
 
         cleanStoredRecords();
 
@@ -141,5 +146,15 @@ public class MailOverheadRolesSelectAdminAction extends JiraWebActionSupport
     public String getQaId()
     {
         return qaId;
+    }
+
+    public Date getJobLastRun()
+    {
+        return jobLastRun;
+    }
+
+    public String getAddressee()
+    {
+        return addressee;
     }
 }

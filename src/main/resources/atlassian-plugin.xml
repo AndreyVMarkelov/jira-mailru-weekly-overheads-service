@@ -120,4 +120,8 @@
 		<description>REST for overhead value management</description>
 	</rest>
 
+	<rest key="overheadcommonsrv" path="/overheadcommonsrv" version="1.0">
+		<description>REST for overhead. Common service</description>
+	</rest>
+
 </atlassian-plugin>
