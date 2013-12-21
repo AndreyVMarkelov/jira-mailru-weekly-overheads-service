@@ -30,8 +30,12 @@ import com.atlassian.plugin.web.Condition;
 public class OverheadRoleCheckCondition implements Condition
 {
 
-    private final Logger log = Logger
-        .getLogger(OverheadRoleCheckCondition.class);
+    private final Logger log = Logger.getLogger(OverheadRoleCheckCondition.class);
+
+    private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
+        .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
+    private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+        .getComponentInstanceOfType(UserProjectHistoryManager.class);
 
     private final OverheadRolesService overheadRolesService;
 
@@ -39,11 +43,8 @@ public class OverheadRoleCheckCondition implements Condition
 
     public OverheadRoleCheckCondition(OverheadRolesService overheadRolesService)
     {
-        ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
         this.overheadRolesService = overheadRolesService;
-        this.roleManager = new DefaultProjectRoleManager(
-            projectRoleAndActorStore);
+        this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
     }
 
     @Override
@@ -54,21 +55,16 @@ public class OverheadRoleCheckCondition implements Condition
     @Override
     public boolean shouldDisplay(Map<String, Object> context)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.info("OverheadRoleCheckCondition::shouldDisplay - User is not logged");
             return false;
         }
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, authCtx.getLoggedInUser());
+        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
 
-        Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user,
-            currentProject);
+        Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
         List<OverheadRoles> recs;
 
         for (ProjectRole role : userRoles)

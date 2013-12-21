@@ -34,6 +34,11 @@ import com.atlassian.sal.api.ApplicationProperties;
 
 public class MailRuOverheadEditAction extends JiraWebActionSupport
 {
+    private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
+        .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
+    private static final UserProjectHistoryManager userProjectHistoryManager = ComponentManager
+        .getComponentInstanceOfType(UserProjectHistoryManager.class);
+    
     private static final long serialVersionUID = -1472852852068396225L;
 
     private static final String DEFAULT_OVERHEAD = "0";
@@ -46,20 +51,16 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
 
     private final ApplicationProperties applicationProperties;
 
-    public MailRuOverheadEditAction(OverheadRolesService overheadRolesService,
-        OverheadValueSetService overheadValueSetService,
+    public MailRuOverheadEditAction(OverheadRolesService overheadRolesService, OverheadValueSetService overheadValueSetService,
         ApplicationProperties applicationProperties)
     {
-        ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
         this.overheadValueSetService = checkNotNull(overheadValueSetService);
         roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.applicationProperties = applicationProperties;
 
         cleanStoredRecords();
 
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         User user = authCtx.getLoggedInUser();
         if (user == null) // should never occur
         {
@@ -68,29 +69,21 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
             return;
         }
 
-        UserProjectHistoryManager userProjectHistoryManager = ComponentManager
-            .getComponentInstanceOfType(UserProjectHistoryManager.class);
-        Project currentProject = userProjectHistoryManager.getCurrentProject(
-            Permissions.BROWSE, authCtx.getLoggedInUser());
+        Project currentProject = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, authCtx.getLoggedInUser());
 
-        Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user,
-            currentProject);
-        Collection<User> allUsers = ComponentManager.getInstance()
-            .getUserUtil().getUsers();
+        Collection<ProjectRole> userRoles = roleManager.getProjectRoles(user, currentProject);
+        Collection<User> allUsers = ComponentManager.getInstance().getUserUtil().getUsers();
         Collection<String> displayUsers = new HashSet<String>();
         for (ProjectRole userRole : userRoles)
         {
-            List<OverheadRoles> roles = overheadRolesService
-                .getRecordsByMaster(userRole.getId());
+            List<OverheadRoles> roles = overheadRolesService.getRecordsByMaster(userRole.getId());
 
             for (OverheadRoles overheadRoles : roles)
             {
-                ProjectRole detailRole = roleManager
-                    .getProjectRole(overheadRoles.getDetailRole());
+                ProjectRole detailRole = roleManager.getProjectRole(overheadRoles.getDetailRole());
                 for (User aUser : allUsers)
                 {
-                    if (roleManager.isUserInProjectRole(aUser, detailRole,
-                        currentProject))
+                    if (roleManager.isUserInProjectRole(aUser, detailRole, currentProject))
                     {
                         displayUsers.add(aUser.getName());
                     }
@@ -99,17 +92,13 @@ public class MailRuOverheadEditAction extends JiraWebActionSupport
         }
         for (String userName : displayUsers)
         {
-            UsersOverhead overhead = overheadValueSetService
-                .getRecordByUsername(userName);
+            UsersOverhead overhead = overheadValueSetService.getRecordByUsername(userName);
             UserOverheadData data = new UserOverheadData();
             if (overhead != null)
             {
                 data.setQaName(overhead.getQaName());
-                data.setOverhead(ComponentManager
-                    .getInstance()
-                    .getJiraDurationUtils()
-                    .getShortFormattedDuration(overhead.getOverhead(),
-                        authCtx.getLocale()));
+                data.setOverhead(ComponentManager.getInstance().getJiraDurationUtils()
+                    .getShortFormattedDuration(overhead.getOverhead(), authCtx.getLocale()));
             }
             else
             {

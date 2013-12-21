@@ -40,21 +40,17 @@ import com.atlassian.jira.util.I18nHelper;
 @Path("/overheadrolesrv")
 public class OverheadRolesBindingService
 {
-    private final Logger log = Logger
-        .getLogger(OverheadRolesBindingService.class);
+    private final Logger log = Logger.getLogger(OverheadRolesBindingService.class);
+    private static final ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
+        .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
 
     private final DefaultProjectRoleManager roleManager;
     private final OverheadRolesService overheadRolesService;
     private final PluginSettingsManager settings;
 
-    public OverheadRolesBindingService(
-        OverheadRolesService overheadRolesService,
-        PluginSettingsManager settings)
+    public OverheadRolesBindingService(OverheadRolesService overheadRolesService, PluginSettingsManager settings)
     {
-        ProjectRoleAndActorStore projectRoleAndActorStore = ComponentManager
-            .getComponentInstanceOfType(ProjectRoleAndActorStore.class);
-        this.roleManager = new DefaultProjectRoleManager(
-            projectRoleAndActorStore);
+        this.roleManager = new DefaultProjectRoleManager(projectRoleAndActorStore);
         this.overheadRolesService = checkNotNull(overheadRolesService);
         this.settings = settings;
     }
@@ -64,29 +60,23 @@ public class OverheadRolesBindingService
     @Produces({MediaType.TEXT_HTML})
     public Response setTask(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("OverheadRolesBindingService::setTask - User is not logged");
-            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
         }
-        if (!ComponentManager.getInstance().getPermissionManager()
-            .hasPermission(Permissions.ADMINISTER, user))
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
         {
             log.error("OverheadRolesBindingService::setTask - User is not admin");
-            return Response.ok(i18n.getText("mailru.service.user.notadmin"))
-                .status(403).build();
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
         }
 
         String taskTemplate = req.getParameter("task");
 
-        if (!Utils.isValidStr(taskTemplate)
-            || ComponentManager.getInstance().getIssueManager()
-                .getIssueObject(taskTemplate) != null)
+        if (!Utils.isValidStr(taskTemplate) || ComponentManager.getInstance().getIssueManager().getIssueObject(taskTemplate) != null)
         {
             settings.setTaskIssue(taskTemplate);
 
@@ -99,8 +89,7 @@ public class OverheadRolesBindingService
             catch (URISyntaxException e)
             {
                 log.error("OverheadRolesBindingService::setTask - Invalid uri");
-                return Response.ok(i18n.getText("mailru.service.invalid.uri"))
-                    .status(500).build();
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
             }
 
             return Response.seeOther(uri).build();
@@ -108,9 +97,7 @@ public class OverheadRolesBindingService
         else
         {
             log.error("OverheadRolesBindingService::setTask - Invalid task param");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.task"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.task")).status(400).build();
         }
     }
 
@@ -119,28 +106,23 @@ public class OverheadRolesBindingService
     @Produces({MediaType.TEXT_HTML})
     public Response setQaId(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("OverheadRolesBindingService::setQaId - User is not logged");
-            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
         }
-        if (!ComponentManager.getInstance().getPermissionManager()
-            .hasPermission(Permissions.ADMINISTER, user))
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
         {
             log.error("OverheadRolesBindingService::setQaId - User is not admin");
-            return Response.ok(i18n.getText("mailru.service.user.notadmin"))
-                .status(403).build();
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
         }
 
         String qaCfId = req.getParameter("qaid");
 
-        if (ComponentManager.getInstance().getCustomFieldManager()
-            .getCustomFieldObject(qaCfId) != null)
+        if (ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObject(qaCfId) != null)
         {
             settings.setQaCFId(qaCfId);
 
@@ -153,8 +135,7 @@ public class OverheadRolesBindingService
             catch (URISyntaxException e)
             {
                 log.error("OverheadRolesBindingService::setQaId - Invalid uri");
-                return Response.ok(i18n.getText("mailru.service.invalid.uri"))
-                    .status(500).build();
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
             }
 
             return Response.seeOther(uri).build();
@@ -162,9 +143,7 @@ public class OverheadRolesBindingService
         else
         {
             log.error("OverheadRolesBindingService::setQaId - Invalid qaid param");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.qaid"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.qaid")).status(400).build();
         }
     }
 
@@ -173,31 +152,26 @@ public class OverheadRolesBindingService
     @Produces({MediaType.TEXT_HTML})
     public Response setAddressee(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("OverheadRolesBindingService::setAddressee - User is not logged");
-            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
         }
-        if (!ComponentManager.getInstance().getPermissionManager()
-            .hasPermission(Permissions.ADMINISTER, user))
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
         {
             log.error("OverheadRolesBindingService::setAddressee - User is not admin");
-            return Response.ok(i18n.getText("mailru.service.user.notadmin"))
-                .status(403).build();
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
         }
 
         String addressee = req.getParameter("addressee");
 
-        if (ComponentManager.getInstance().getUserUtil()
-            .getUserObject(addressee) != null)
+        if (ComponentManager.getInstance().getUserUtil().getUserObject(addressee) != null)
         {
             settings.setAddressee(addressee);
-            
+
             String referrer = req.getHeader("referer");
             URI uri;
             try
@@ -207,8 +181,7 @@ public class OverheadRolesBindingService
             catch (URISyntaxException e)
             {
                 log.error("OverheadRolesBindingService::setAddressee - Invalid uri");
-                return Response.ok(i18n.getText("mailru.service.invalid.uri"))
-                    .status(500).build();
+                return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
             }
 
             return Response.seeOther(uri).build();
@@ -216,9 +189,7 @@ public class OverheadRolesBindingService
         else
         {
             log.error("OverheadRolesBindingService::setAddressee - Invalid user");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.addressee"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.addressee")).status(400).build();
         }
     }
 
@@ -227,22 +198,18 @@ public class OverheadRolesBindingService
     @Produces({MediaType.TEXT_HTML})
     public Response bind(@Context HttpServletRequest req)
     {
-        JiraAuthenticationContext authCtx = ComponentManager.getInstance()
-            .getJiraAuthenticationContext();
+        JiraAuthenticationContext authCtx = ComponentManager.getInstance().getJiraAuthenticationContext();
         I18nHelper i18n = authCtx.getI18nHelper();
         User user = authCtx.getLoggedInUser();
         if (user == null)
         {
             log.error("OverheadRolesBindingService::bind - User is not logged");
-            return Response.ok(i18n.getText("mailru.service.user.notlogged"))
-                .status(401).build();
+            return Response.ok(i18n.getText("mailru.service.user.notlogged")).status(401).build();
         }
-        if (!ComponentManager.getInstance().getPermissionManager()
-            .hasPermission(Permissions.ADMINISTER, user))
+        if (!ComponentManager.getInstance().getPermissionManager().hasPermission(Permissions.ADMINISTER, user))
         {
             log.error("OverheadRolesBindingService::bind - User is not admin");
-            return Response.ok(i18n.getText("mailru.service.user.notadmin"))
-                .status(403).build();
+            return Response.ok(i18n.getText("mailru.service.user.notadmin")).status(403).build();
         }
 
         String masterRole = req.getParameter("masterrole");
@@ -251,16 +218,12 @@ public class OverheadRolesBindingService
         if (!isValidRole(masterRole))
         {
             log.error("OverheadRolesBindingService::bind - Invalid param master role");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.master"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.master")).status(400).build();
         }
         if (!isValidRoles(detailRoles))
         {
             log.error("OverheadRolesBindingService::bind - Invalid params detail roles");
-            return Response
-                .ok(i18n.getText("mailru.service.invalid.param.detail"))
-                .status(400).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.param.detail")).status(400).build();
         }
 
         Long masterRoleId = Long.valueOf(masterRole);
@@ -271,8 +234,7 @@ public class OverheadRolesBindingService
             detailRoleIds[i] = Long.valueOf(detailRoles[i]);
         }
 
-        List<OverheadRoles> storedRoles = overheadRolesService
-            .getRecordsByMaster(masterRoleId);
+        List<OverheadRoles> storedRoles = overheadRolesService.getRecordsByMaster(masterRoleId);
 
         Collection<ProjectRole> allRoles = roleManager.getProjectRoles();
 
@@ -301,8 +263,7 @@ public class OverheadRolesBindingService
         catch (URISyntaxException e)
         {
             log.error("OverheadRolesBindingService::bind - Invalid uri");
-            return Response.ok(i18n.getText("mailru.service.invalid.uri"))
-                .status(500).build();
+            return Response.ok(i18n.getText("mailru.service.invalid.uri")).status(500).build();
         }
 
         return Response.seeOther(uri).build();
@@ -323,8 +284,7 @@ public class OverheadRolesBindingService
         return result;
     }
 
-    private OverheadRoles getRecordWithDetail(List<OverheadRoles> records,
-        Long detail)
+    private OverheadRoles getRecordWithDetail(List<OverheadRoles> records, Long detail)
     {
         OverheadRoles result = null;
         if (!Utils.isEmpty(records) && detail != null)
