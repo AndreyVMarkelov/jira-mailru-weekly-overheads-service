@@ -126,12 +126,13 @@ public class MailRuOverheadTask implements PluginJob
 
         long endTime = startTime + MailRuOverheadsMonitorImpl.REPEAT_INTERVAL
             - MailRuOverheadsMonitorImpl.ONE_DAY_IN_MILLIS;
-        StringBuilder sb = new StringBuilder();
-        sb.append("[week ");
-        sb.append(formatDate(new Date(startTime)));
-        sb.append('-');
-        sb.append(formatDate(new Date(endTime)));
-        sb.append("] Недельные оверхеды");
+
+        String taskSummary = ComponentManager
+            .getInstance()
+            .getJiraAuthenticationContext()
+            .getI18nHelper()
+            .getText("mailru.overheads.task.summary.format",
+                formatDate(new Date(startTime)), formatDate(new Date(endTime)));
 
         for (User user : allUsers)
         {
@@ -148,8 +149,8 @@ public class MailRuOverheadTask implements PluginJob
                     User qaUser = componentManager.getUserUtil().getUser(
                         overhead.getQaName());
 
-                    newIssue.setSummary(sb.toString());
-                    newIssue.setDescription(sb.toString());
+                    newIssue.setSummary(taskSummary);
+                    newIssue.setDescription(taskSummary);
                     newIssue.setAssignee(user);
                     newIssue.setEstimate(overheadValue);
                     newIssue.setCustomFieldValue(componentManager
