@@ -19,6 +19,9 @@ public class PluginSettingsManager implements IPluginSettingsManager
 
     public static final String TASK_ISSUE_KEY = "taskissue";
     public static final String CF_QA_ID_KEY = "cfqaid";
+    public static final String CF_ASSIGNEE_ID_KEY = "cfassigneeid";
+    public static final String CF_FEATUREGOAL_ID_KEY = "cffeaturegoalid";
+    public static final String CF_SEVERITY_ID_KEY = "cfseverityid";
     public static final String USER_ADDRESSEE = "addressee";
 
     public static final String JOB_LAST_RUN_KEY = "joblastrun";
@@ -68,6 +71,42 @@ public class PluginSettingsManager implements IPluginSettingsManager
     public String getQaCFId()
     {
         return (String) getValue(CF_QA_ID_KEY);
+    }
+
+    @Override
+    public void setAssigneeCFId(String cfId)
+    {
+        setValue(CF_ASSIGNEE_ID_KEY, cfId);
+    }
+    
+    @Override
+    public String getAssigneeCFId()
+    {
+        return (String) getValue(CF_ASSIGNEE_ID_KEY);
+    }
+    
+    @Override
+    public void setFeatureGoalCFId(String cfId)
+    {
+        setValue(CF_FEATUREGOAL_ID_KEY, cfId);
+    }
+    
+    @Override
+    public String getFeatureGoalCFId()
+    {
+        return (String) getValue(CF_FEATUREGOAL_ID_KEY);
+    }
+
+    @Override
+    public void setSeverityCFId(String cfId)
+    {
+        setValue(CF_SEVERITY_ID_KEY, cfId);
+    }
+    
+    @Override
+    public String getSeverityCFId()
+    {
+        return (String) getValue(CF_SEVERITY_ID_KEY);
     }
 
     @Override

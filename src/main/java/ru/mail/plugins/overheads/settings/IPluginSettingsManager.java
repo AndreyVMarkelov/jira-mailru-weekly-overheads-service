@@ -23,6 +23,18 @@ public interface IPluginSettingsManager
 
     public String getQaCFId();
 
+    public void setAssigneeCFId(String cfId);
+    
+    public String getAssigneeCFId();
+    
+    public void setFeatureGoalCFId(String cfId);
+    
+    public String getFeatureGoalCFId();
+    
+    public void setSeverityCFId(String cfId);
+    
+    public String getSeverityCFId();
+
     public void setJobLastRun(Date date);
 
     public Date getJobLastRun();

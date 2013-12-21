@@ -25,21 +25,21 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
                         <td>
                         </td>
                     </thead>
-                    #foreach($username in $action.overheads.keySet())
+                    #foreach($displayuser in $action.overheads.keySet())
                         <tr>
-                            <form id="overhead-change-${username}" name="overhead-change-form" action="$action.getBaseUrl()/rest/overheadvalssrv/1.0/overheadvalssrv/changeval" method="get">
+                            <form id="overhead-change-$displayuser.name" name="overhead-change-form" action="$action.getBaseUrl()/rest/overheadvalssrv/1.0/overheadvalssrv/changeval" method="get">
                                 <td width="40%" class="jiraformbody">
-                                    <input type="hidden" name="username" value="$username" id="ov-username-$username">
-                                        $username
+                                    <input type="hidden" name="username" value="$displayuser.name" id="ov-username-$displayuser.name">
+                                        $displayuser.displayName
 </td>
 <td width="25%" class="jiraformbody">
-    <input type="text" name="overhead" value="$action.overheads.get($username).overhead" id="ov-user-overhead-$username">
+    <input type="text" name="overhead" value="$action.overheads.get($displayuser).overhead" id="ov-user-overhead-$displayuser.name">
 </td>
 <td width="25%" class="jiraformbody">
-    <select class="select" id="ov-qa-select-$username" name="qa">
-        <option value="" #if(!$action.overheads.get($username).qaName) selected#end></option>
+    <select class="select" id="ov-qa-select-$displayuser.name" name="qa">
+        <option value="" #if(!$action.overheads.get($displayuser).qaName) selected#end></option>
             #foreach($user in $action.getAllUsers())
-                <option value="$user.name" #if($user.name == $action.overheads.get($username).qaName) selected#end>${user.name}</option>
+                <option value="$user.name" #if($user.name == $action.overheads.get($displayuser).qaName) selected#end>${user.displayName}</option>
             #end
     </select>
 </td>
