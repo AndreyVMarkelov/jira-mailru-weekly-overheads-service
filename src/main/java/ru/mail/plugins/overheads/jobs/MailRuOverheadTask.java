@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import ru.mail.plugins.overheads.ao.OverheadValueSetService;
-import ru.mail.plugins.overheads.common.Utils;
 import ru.mail.plugins.overheads.entities.UsersOverhead;
 import ru.mail.plugins.overheads.settings.PluginSettingsManager;
 

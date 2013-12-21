@@ -55,7 +55,7 @@ public class PluginSettingsManager implements IPluginSettingsManager
     {
         return (String) getValue(TASK_ISSUE_KEY);
     }
-    
+
     @Override
     public void setQaCFId(String cfId)
     {

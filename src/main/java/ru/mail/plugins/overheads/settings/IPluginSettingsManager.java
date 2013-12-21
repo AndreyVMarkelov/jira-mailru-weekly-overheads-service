@@ -4,6 +4,7 @@
  */
 package ru.mail.plugins.overheads.settings;
 
+
 import java.util.Date;
 
 
@@ -19,10 +20,10 @@ public interface IPluginSettingsManager
     public String getTaskIssue();
 
     public void setQaCFId(String cfId);
-    
+
     public String getQaCFId();
 
     public void setJobLastRun(Date date);
-    
+
     public Date getJobLastRun();
 }
