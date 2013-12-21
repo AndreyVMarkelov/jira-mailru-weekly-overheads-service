@@ -70,10 +70,6 @@
 		</actions>
 	</webwork1>
 
-	<web-section key="overhead-edit-section" name="Mail.ru Overhead edit section"
-		location="overhead-edit-link" weight="10">
-	</web-section>
-
 	<web-item key="overhead-edit-link" name="Mail.ru Overhead edit link"
 		section="system.top.navigation.bar" weight="47">
 		<conditions type="AND">
