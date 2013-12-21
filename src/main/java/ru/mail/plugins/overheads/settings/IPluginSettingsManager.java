@@ -30,4 +30,8 @@ public interface IPluginSettingsManager
     public String getAddressee();
 
     public void setAddressee(String user);
+    
+    public void setForceNotification(boolean flag);
+
+    public boolean isForceNotification();
 }

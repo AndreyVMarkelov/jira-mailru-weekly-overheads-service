@@ -22,6 +22,7 @@ public class PluginSettingsManager implements IPluginSettingsManager
     public static final String USER_ADDRESSEE = "addressee";
 
     public static final String JOB_LAST_RUN_KEY = "joblastrun";
+    public static final String FORCE_NOTIFICATION_KEY = "forcenotification";
 
     public PluginSettingsManager(
         final PluginSettingsFactory pluginSettingsFactory)
@@ -68,7 +69,7 @@ public class PluginSettingsManager implements IPluginSettingsManager
     {
         return (String) getValue(CF_QA_ID_KEY);
     }
-    
+
     @Override
     public String getAddressee()
     {
@@ -109,5 +110,17 @@ public class PluginSettingsManager implements IPluginSettingsManager
         {
             return null;
         }
+    }
+
+    @Override
+    public void setForceNotification(boolean flag)
+    {
+        setValue(FORCE_NOTIFICATION_KEY, String.valueOf(flag));
+    }
+
+    @Override
+    public boolean isForceNotification()
+    {
+        return Boolean.valueOf((String) getValue(FORCE_NOTIFICATION_KEY));
     }
 }

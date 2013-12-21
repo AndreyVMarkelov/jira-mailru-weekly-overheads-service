@@ -77,6 +77,9 @@ $webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:m
 <form id="overhead-force-job-form-id" name="overhead-force-job-form" action="$action.getBaseUrl()/rest/overheadcommonsrv/1.0/overheadcommonsrv/forcejob" method="get">
        <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.forcejob")">
 </form>
+#if ($action.isForceNotificationMessage())
+	<p style="color:#009933"><b>$action.getText("mailru.overheads.admin.tab.force.notification")</b></p>
+#end
 <b>Last run:</b> $!action.jobLastRun
 <table width="100%" class="grid">
     <thead class="jiraformheader">
