@@ -79,7 +79,7 @@
 	</webwork1>
 
 	<web-item key="overhead-edit-link" name="Mail.ru Overhead edit link"
-		section="system.top.navigation.bar" weight="47">
+		section="mailru-all-configurations-links/mailru-all-configurations-section" weight="47">
 		<conditions type="AND">
 			<condition
 				class="com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition" />
