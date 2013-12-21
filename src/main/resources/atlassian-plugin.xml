@@ -1,4 +1,4 @@
-<!-- Created by Dmitry Miroshnichenko 11-12-2012. Copyright Mail.Ru Group 
+<!-- Created by Dmitry Miroshnichenko 11-12-2012. Copyright Mail.Ru Group
 	2012. All rights reserved. -->
 <atlassian-plugin key="${project.groupId}.${project.artifactId}"
 	name="${project.name}" plugins-version="2">
@@ -48,7 +48,7 @@
 		class="ru.mail.plugins.overheads.ao.OverheadValueSetServiceImpl" />
 
 	<web-item key="mailru-overhead-roles-configuration-item" name="overhead-roles config item"
-		section="admin_plugins_menu/mailru-admin-section" weight="95">
+		section="system.admin/globalsettings" weight="95">
 		<label key="mailru.overhead.admin.tab.label" />
 		<condition
 			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
