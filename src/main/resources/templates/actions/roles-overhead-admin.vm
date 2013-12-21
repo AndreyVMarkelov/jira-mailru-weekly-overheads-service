@@ -1,0 +1,89 @@
+## Created by Dmitry Miroshnichenko 28-11-2012. Copyright Mail.Ru Group 2012. All
+## rights reserved.
+$webResourceManager.requireResource("ru.mail.jira.plugins.mail-weekly-overhead:mail-overhead-roles-resources")
+<html>
+    <head>
+        <meta name="decorator" content="admin"/>
+        <meta name="admin.active.section" content="admin_plugins_menu/mailru-admin-section"/>
+        <title>$i18n.getText("mailru.overheads.admin.tab.roles.page.caption")</title>
+    </head>
+    <body>
+        #if($action.hasAdminPermission())
+            <h2>$action.getText("mailru.overheads.admin.tab.roles.block.caption")</h2>
+            <table width="100%" class="grid">
+                <thead class="jiraformheader">
+                    <td>
+                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.templates.label")</b>
+                    </td>
+                    <td>
+                        <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.templates.value")</b>
+                    </td>
+                </thead>
+                <tr>
+                    <form id="overhead-templates-form-id" name="overhead-template-task-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/settask" method="get">
+                        <td width="40%" class="jiraformbody">
+                            $i18n.getText("mailru.overheads.admin.tab.roles.template.task")
+                        </td>
+                        <td width="60%" class="jiraformbody">
+                            <input id="task-template-input-id" type="text" name="task" value="$!action.getTaskTemplate()">
+                                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+</td>
+</form>
+</tr>
+</table>
+<table width="100%" class="grid">
+    <thead class="jiraformheader">
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.changer.master")</b>
+        </td>
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.changer.details")</b>
+        </td>
+    </thead>
+    <tr>
+        <form id="overhead-roles-form-id" name="overhead-roles-form" action="$action.getBaseUrl()/rest/overheadrolesrv/1.0/overheadrolesrv/bind" method="get">
+            <td width="40%" class="jiraformbody">
+                <select form="overhead-roles-form-id" name="masterrole" size="1">
+                    #foreach($mr in $action.getAllRoles())
+                        <option value="$mr.id">$mr.name</option>
+                    #end
+                </select>
+            </td>
+            <td width="60%" class="jiraformbody">
+                <select form="overhead-roles-form-id" name="detailroles" multiple size="$action.getAllRoles().size()">
+                    #foreach($dr in $action.getAllRoles())
+                        <option value="$dr.id">$dr.name</option>
+                    #end
+                </select>
+                <input type="submit" value="$action.getText("mailru.overheads.admin.tab.button.submit")">
+</td>
+</form>
+</tr>
+</table>
+<table width="100%" class="grid">
+    <thead class="jiraformheader">
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.master")</b>
+        </td>
+        <td>
+            <b>$i18n.getText("mailru.overheads.admin.tab.roles.table.details")</b>
+        </td>
+    </thead>
+    #foreach ($masterRole in $action.getRoles().keySet())
+        <tr>
+            <td width="40%" class="jiraformbody">
+                $masterRole
+            </td>
+            <td width="60%" class="jiraformbody">
+                #foreach($detailRole in $action.roles.get($masterRole))
+                    <p>$detailRole</p>
+                #end
+            </td>
+        </tr>
+    #end
+</table>
+#else
+    <div class="errorArea">$action.getText("mailru.overheads.admin.tab.roles.error.access")</div>
+        #end
+</body>
+</html>

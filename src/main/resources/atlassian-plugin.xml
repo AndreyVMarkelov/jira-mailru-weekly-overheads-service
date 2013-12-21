@@ -1,0 +1,123 @@
+<!-- Created by Dmitry Miroshnichenko 11-12-2012. Copyright Mail.Ru Group 
+	2012. All rights reserved. -->
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+	</plugin-info>
+
+	<ao key="mail-ao-overhead-module">
+		<description>The AO module for overheads.</description>
+		<entity>ru.mail.plugins.overheads.entities.OverheadRoles</entity>
+		<entity>ru.mail.plugins.overheads.entities.UsersOverhead</entity>
+	</ao>
+
+	<resource type="i18n" name="i18n" location="i18n/mailru-ao-overheads" />
+
+	<web-resource key="mail-overhead-roles-resources" name="overhead-roles resources">
+		<resource type="download" name="mail-style-resources.css"
+			location="resources/mail-style-resources.css" />
+	</web-resource>
+
+	<component key="mailru-overheads-plugin-settings-manager"
+		name="Plugin settings manager" class="ru.mail.plugins.overheads.settings.PluginSettingsManager" />
+	<component-import key="pluginSettingsFactory">
+		<interface>com.atlassian.sal.api.pluginsettings.PluginSettingsFactory
+		</interface>
+	</component-import>
+
+	<component-import key="ao" name="Active Objects service"
+		interface="com.atlassian.activeobjects.external.ActiveObjects">
+		<description>Component to access Active Objects functionality from the
+			plugin
+		</description>
+	</component-import>
+	<component-import key="applicationProperties">
+		<interface>com.atlassian.sal.api.ApplicationProperties</interface>
+	</component-import>
+	<component key="tx-processor" name="Transactional Annotation Processor"
+		class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+		<decription>Processes @Transactional annotations.</decription>
+	</component>
+
+	<component key="overhead-roles-service" name="Overhead Roles Service"
+		class="ru.mail.plugins.overheads.ao.OverheadRolesServiceImpl" />
+	<component key="overhead-value-service" name="Overhead Value Service"
+		class="ru.mail.plugins.overheads.ao.OverheadValueSetServiceImpl" />
+
+	<web-item key="mailru-overhead-roles-configuration-item" name="overhead-roles config item"
+		section="admin_plugins_menu/mailru-admin-section" weight="95">
+		<label key="mailru.overhead.admin.tab.label" />
+		<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+			<param name="permission">admin</param>
+		</condition>
+		<link linkId="mailru-overhead-roles-configuration-item">/secure/MailOverheadRolesSelectAdminAction.jspa
+		</link>
+	</web-item>
+
+	<webwork1 key="mailru_overhead_roles_tab" name="overhead-roles admin action"
+		class="java.lang.Object">
+		<actions>
+			<action
+				name="ru.mail.plugins.overheads.actions.MailOverheadRolesSelectAdminAction"
+				alias="MailOverheadRolesSelectAdminAction">
+				<view name="input">/templates/actions/roles-overhead-admin.vm</view>
+				<view name="success">/templates/actions/roles-overhead-admin.vm</view>
+			</action>
+		</actions>
+	</webwork1>
+
+	<web-section key="overhead-edit-section" name="Mail.ru Overhead edit section"
+		location="overhead-edit-link" weight="10">
+	</web-section>
+
+	<web-item key="overhead-edit-link" name="Mail.ru Overhead edit link"
+		section="system.top.navigation.bar" weight="47">
+		<conditions type="AND">
+			<condition
+				class="com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition" />
+			<condition
+				class="ru.mail.plugins.overheads.conditions.OverheadRoleCheckCondition" />
+		</conditions>
+		<label key="mailru.overhead.edit.tab.label" />
+		<tooltip key="mailru.overhead.edit.tab.tooltip" />
+		<link linkId="overhead-edit-link">/secure/MailRuOverheadEditAction.jspa</link>
+	</web-item>
+
+	<webwork1 key="mailru_overhead_edit_tab" name="overhead edit action"
+		class="java.lang.Object">
+		<actions>
+			<action name="ru.mail.plugins.overheads.actions.MailRuOverheadEditAction"
+				alias="MailRuOverheadEditAction">
+				<view name="input">/templates/actions/overhead-edit.vm</view>
+				<view name="success">/templates/actions/overhead-edit.vm</view>
+			</action>
+		</actions>
+	</webwork1>
+
+	<component-import key="plugin-scheduler">
+		<description>SAL Scheduler</description>
+		<interface>com.atlassian.sal.api.scheduling.PluginScheduler
+		</interface>
+	</component-import>
+	<component key="scheduler-component"
+		class="ru.mail.plugins.overheads.jobs.MailRuOverheadsMonitorImpl"
+		system="true" public="true">
+		<description>The plugin component that schedules overheads creating
+			tasks.
+		</description>
+		<interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
+	</component>
+
+	<rest key="overheadrolesrv" path="/overheadrolesrv" version="1.0">
+		<description>REST for role overheads</description>
+	</rest>
+
+	<rest key="overheadvalssrv" path="/overheadvalssrv" version="1.0">
+		<description>REST for overhead value management</description>
+	</rest>
+
+</atlassian-plugin>
